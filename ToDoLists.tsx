@@ -10,6 +10,7 @@ import {addTodoAsync, deleteTodoAsync, getTodosAsync} from "./redux/todoSlice";
 const ToDoLists = () => {
     const [name, setName] = useState('')
     const dispatch = useDispatch();
+    // @ts-ignore
     const todo = useSelector((state) => state.todo);
 
 
@@ -25,12 +26,9 @@ const ToDoLists = () => {
         setName('')
     }
 
-    const toggleCheckedToDo = idx => {
-        dispatch(toggleCheckedToDo(idx))
-    }
 
-    const deleteTodo = idx => {
-        dispatch(deleteTodoAsync(idx))
+    const deleteTodo = id => {
+        dispatch(deleteTodoAsync(id))
     }
 
 
@@ -68,13 +66,12 @@ const ToDoLists = () => {
 
             >
                 {todo &&
-                    todo.map((t, idx) => (
+                    todo.map((t) => (
                         <ToDoItem
                             key={`_todo_${t.id}`}
-                            idx={idx}
+                            id={t.id}
                             name={t.title}
                             IsCompleted={t.IsCompleted}
-                            toggleCheckedToDo={toggleCheckedToDo}
                             deleteTodo={deleteTodo}
                         />
                     ))}

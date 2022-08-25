@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 export type todoType = {
     id: string
     title: string
-    IsComplete: boolean
+    IsCompleted: boolean
 }
 
 
@@ -24,9 +24,11 @@ export const addTodoAsync = createAsyncThunk(
         console.log(payload)
         const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+            },
             body: JSON.stringify({ title: payload }),
         });
-
         if (resp.ok) {
             const todoFormResp = await resp.json();
             return { todoFormResp };
@@ -36,13 +38,14 @@ export const addTodoAsync = createAsyncThunk(
 
 export const toggleCompleteAsync = createAsyncThunk(
     'todo/completeTodoAsync',
-    async (payload: boolean) => {
-        const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${payload}`, {
-            method: 'PATCH',
+    async (payload: any) => {
+        console.log(payload)
+        const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${payload.id}`, {
+            method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
             },
-            body: JSON.stringify({ IsComplete: payload }),
+            body: JSON.stringify({ IsCompleted: !payload.IsCompleted }),
         });
 
         if (resp.ok) {
@@ -54,7 +57,8 @@ export const toggleCompleteAsync = createAsyncThunk(
 
 export const deleteTodoAsync = createAsyncThunk(
     'todo/deleteTodoAsync',
-    async (payload: string) => {
+    async (payload: any) => {
+        console.log(payload)
         const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${payload}`, {
             method: 'DELETE',
         });
@@ -87,7 +91,10 @@ export const todoSlice = createSlice({
         },
         toggleComplete: (state, action) => {
             const index = state.findIndex((todo) => todo.id === action.payload.id);
-            state[index].IsCompleted = action.payload.IsCompleted;
+            state[index].IsCompleted = action.payload.isCompleted;
+
+            // return state.map((todo) => (todo.id === action.payload.id ? (todo.IsCompleted = action.payload.IsCompleted) : (todo) ) )
+
         },
         deleteTodo: (state, action) => {
             return state.filter((todo) => todo.id !== action.payload.id);
@@ -101,15 +108,15 @@ export const todoSlice = createSlice({
         [addTodoAsync.fulfilled]: (state, action) => {
             state.push(action.payload.todo);
         },
-        [toggleCompleteAsync.fulfilled]: (state, action) => {
-            const index = state.findIndex(
-                (todo) => todo.id === action.payload.todo.id
-            );
-            state[index].IsCompleted = action.payload.todo.IsCompleted;
-        },
-        [deleteTodoAsync.fulfilled]: (state, action) => {
-            return state.filter((todo) => todo.id !== action.payload.id);
-        },
+        // [toggleCompleteAsync.fulfilled]: (state, action) => {
+        //     const index = state.findIndex(
+        //         (todo) => todo.id === action.payload.id
+        //     );
+        //     return state[index].IsCompleted = action.payload.IsCompleted;
+        // },
+        // [deleteTodoAsync.fulfilled]: (state, action) => {
+        //     return state.filter((todo) => todo.id !== action.payload.id);
+        // },
     },
 });
 
