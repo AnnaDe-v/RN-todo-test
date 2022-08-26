@@ -10,11 +10,9 @@ const ToDoItem = ({id, name, IsCompleted, deleteTodo}) => {
 
 
     const handleCheckboxClick = () => {
-        dispatch(toggleCompleteAsync({ id, IsCompleted }));
+        dispatch(toggleCompleteAsync({ id }));
 
     };
-
-    console.log(IsCompleted)
 
     return (
         <TouchableHighlight

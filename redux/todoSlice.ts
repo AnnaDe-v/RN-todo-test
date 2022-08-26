@@ -38,20 +38,28 @@ export const addTodoAsync = createAsyncThunk(
 
 export const toggleCompleteAsync = createAsyncThunk(
     'todo/completeTodoAsync',
-    async (payload: any) => {
-        console.log(payload)
-        const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${payload.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-            body: JSON.stringify({ IsCompleted: !payload.IsCompleted }),
-        });
+    async function({id}, {rejectWithValue, dispatch, getState}) {
+        const todo = getState().todo.find(todo => todo.id === id)
 
-        if (resp.ok) {
-            const todoFormResp = await resp.json();
-            return { todoFormResp };
+        try {
+            const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                },
+                body: JSON.stringify({ IsCompleted: !todo.IsCompleted }),
+            });
+
+            if (!resp.ok) {
+                throw new Error(("Server error. Toggle status can't change"))
+            }
+            dispatch(toggleComplete({id}))
+
+        } catch (error) {
+            return rejectWithValue(error.message)
         }
+
+
     }
 );
 
@@ -90,11 +98,8 @@ export const todoSlice = createSlice({
             state.push(todoItem);
         },
         toggleComplete: (state, action) => {
-            const index = state.findIndex((todo) => todo.id === action.payload.id);
-            state[index].IsCompleted = action.payload.isCompleted;
-
-            // return state.map((todo) => (todo.id === action.payload.id ? (todo.IsCompleted = action.payload.IsCompleted) : (todo) ) )
-
+            const toggledTodo = state.find((todo) => todo.id === action.payload.id);
+            toggledTodo.IsCompleted = !toggledTodo.IsCompleted;
         },
         deleteTodo: (state, action) => {
             return state.filter((todo) => todo.id !== action.payload.id);
@@ -108,15 +113,15 @@ export const todoSlice = createSlice({
         [addTodoAsync.fulfilled]: (state, action) => {
             state.push(action.payload.todo);
         },
-        // [toggleCompleteAsync.fulfilled]: (state, action) => {
-        //     const index = state.findIndex(
-        //         (todo) => todo.id === action.payload.id
-        //     );
-        //     return state[index].IsCompleted = action.payload.IsCompleted;
-        // },
-        // [deleteTodoAsync.fulfilled]: (state, action) => {
-        //     return state.filter((todo) => todo.id !== action.payload.id);
-        // },
+        [toggleCompleteAsync.fulfilled]: (state, action) => {
+            const index = state.findIndex(
+                (todo) => todo.id === action.payload.todo.id
+            );
+            return state[index].IsCompleted = action.payload.IsCompleted;
+        },
+        [deleteTodoAsync.fulfilled]: (state, action) => {
+            return state.filter((todo) => todo.id !== action.payload.id);
+        },
     },
 });
 
