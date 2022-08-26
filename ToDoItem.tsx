@@ -46,11 +46,12 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginHorizontal: '5%',
         flexDirection: 'row',
-
     },
     name: {
         fontSize: 18,
-        marginLeft: 5
+        marginLeft: 5,
+        flex: 1,
+        flexWrap: 'wrap',
     }
 })
 

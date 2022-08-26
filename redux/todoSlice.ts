@@ -37,14 +37,10 @@ export const addTodoAsync = createAsyncThunk(
                 }
             );
             if (!resp.ok) {
-                throw new Error(("Server error. New task can't add"))
+                throw new Error("Server error. New task can't add")
             }
-
             const data = await resp.json()
-            console.log(data)
-
             dispatch(addTodo(data))
-
         } catch (error) {
             return rejectWithValue(error.message)
         }
@@ -67,7 +63,7 @@ export const toggleCompleteAsync = createAsyncThunk(
             });
 
             if (!resp.ok) {
-                throw new Error(("Server error. Toggle status can't change"))
+                throw new Error("Server error. Toggle status can't change")
             }
             dispatch(toggleComplete({id}))
 
@@ -79,16 +75,21 @@ export const toggleCompleteAsync = createAsyncThunk(
     }
 );
 
+
 export const deleteTodoAsync = createAsyncThunk(
     'todo/deleteTodoAsync',
-    async (payload: any) => {
-        console.log(payload)
-        const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${payload}`, {
-            method: 'DELETE',
-        });
+    async (id, {rejectWithValue, dispatch}) => {
+        try {
+            const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${id}`, {
+                method: 'DELETE',
+            });
+            if (!resp.ok) {
+                throw new Error("Server error. The task can't remove")
+            }
+            dispatch(deleteTodo({id}))
 
-        if (resp.ok) {
-            return {id: payload};
+        } catch (error) {
+            rejectWithValue(error.message)
         }
     }
 );
@@ -96,9 +97,7 @@ export const deleteTodoAsync = createAsyncThunk(
 
 export const todoSlice = createSlice({
     name: 'todo',
-    initialState: [
-
-    ],
+    initialState: [],
     reducers: {
         addTodo: (state, action) => {
             state.push(action.payload);

@@ -53,13 +53,7 @@ const ToDoLists = () => {
                 />
             </View>
             <ScrollView
-                style={{
-                    borderTopLeftRadius: 30,
-                    borderTopRightRadius: 30,
-                    borderTopWidth: 6,
-                    borderColor: 'cyan',
 
-                }}
                 contentContainerStyle={{
                     paddingTop: 20,
                     paddingBottom: 400,
