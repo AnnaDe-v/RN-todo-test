@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 
 export type todoType = {
     id: string
@@ -13,32 +13,48 @@ export const getTodosAsync = createAsyncThunk(
         const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo');
         if (resp.ok) {
             const todoFormResp = await resp.json();
-            return { todo: todoFormResp };
+            return {todo: todoFormResp};
         }
     }
 );
 
 export const addTodoAsync = createAsyncThunk(
     'todo/addTodoAsync',
-    async (payload) => {
-        console.log(payload)
-        const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-            body: JSON.stringify({ title: payload }),
-        });
-        if (resp.ok) {
-            const todoFormResp = await resp.json();
-            return { todoFormResp };
+    async function (text, {rejectWithValue, dispatch}) {
+        console.log(text)
+        const todoObj = {
+            title: text,
+            IsCompleted: false
         }
+        try {
+            const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                    },
+                    body: JSON.stringify(todoObj),
+                }
+            );
+            if (!resp.ok) {
+                throw new Error(("Server error. New task can't add"))
+            }
+
+            const data = await resp.json()
+            console.log(data)
+
+            dispatch(addTodo(data))
+
+        } catch (error) {
+            return rejectWithValue(error.message)
+        }
+
     }
 );
 
 export const toggleCompleteAsync = createAsyncThunk(
     'todo/completeTodoAsync',
-    async function({id}, {rejectWithValue, dispatch, getState}) {
+    async function ({id}, {rejectWithValue, dispatch, getState}) {
         const todo = getState().todo.find(todo => todo.id === id)
 
         try {
@@ -47,7 +63,7 @@ export const toggleCompleteAsync = createAsyncThunk(
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
                 },
-                body: JSON.stringify({ IsCompleted: !todo.IsCompleted }),
+                body: JSON.stringify({IsCompleted: !todo.IsCompleted}),
             });
 
             if (!resp.ok) {
@@ -72,7 +88,7 @@ export const deleteTodoAsync = createAsyncThunk(
         });
 
         if (resp.ok) {
-            return { id: payload };
+            return {id: payload};
         }
     }
 );
@@ -81,21 +97,11 @@ export const deleteTodoAsync = createAsyncThunk(
 export const todoSlice = createSlice({
     name: 'todo',
     initialState: [
-        { id: 1, title: 'todo1', IsCompleted: true },
-        { id: 2, title: 'todo2', IsCompleted: false },
-        { id: 3, title: 'todo3', IsCompleted: true },
-        { id: 4, title: 'todo4', IsCompleted: false },
-        { id: 5, title: 'todo5', IsCompleted: true },
+
     ],
     reducers: {
         addTodo: (state, action) => {
-            const todoItem = {
-                id: Date.now(),
-                title: action.payload.title,
-                isCompleted: false,
-            };
-            // @ts-ignore
-            state.push(todoItem);
+            state.push(action.payload);
         },
         toggleComplete: (state, action) => {
             const toggledTodo = state.find((todo) => todo.id === action.payload.id);
@@ -111,7 +117,7 @@ export const todoSlice = createSlice({
             return action.payload.todo;
         },
         [addTodoAsync.fulfilled]: (state, action) => {
-            state.push(action.payload.todo);
+            state.todo.push(action.payload);
         },
         [toggleCompleteAsync.fulfilled]: (state, action) => {
             const index = state.findIndex(
@@ -125,6 +131,6 @@ export const todoSlice = createSlice({
     },
 });
 
-export const { addTodo, toggleComplete, deleteTodo } = todoSlice.actions;
+export const {addTodo, toggleComplete, deleteTodo} = todoSlice.actions;
 
 export default todoSlice.reducer;

@@ -1,10 +1,10 @@
-import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity} from "react-native";
+import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, LogBox} from "react-native";
 import {CheckBox} from "@rneui/themed";
 import { Feather } from '@expo/vector-icons';
 import {toggleCompleteAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
 
-const ToDoItem = ({id, name, IsCompleted, deleteTodo}) => {
+const ToDoItem = ({id, text, IsCompleted, deleteTodo}) => {
     const dispatch = useDispatch()
 
 
@@ -25,7 +25,7 @@ const ToDoItem = ({id, name, IsCompleted, deleteTodo}) => {
                     onPress={handleCheckboxClick}
                     checked={IsCompleted}
                 />
-                <Text style={styles.name}>{name} {IsCompleted}</Text>
+                <Text style={styles.name}>{text}</Text>
                 <TouchableOpacity onPress={() => deleteTodo(id) }>
                     <Feather name="trash" size={24} color="black"  />
                 </TouchableOpacity>

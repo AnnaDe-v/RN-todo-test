@@ -8,7 +8,7 @@ import {addTodoAsync, deleteTodoAsync, getTodosAsync} from "./redux/todoSlice";
 
 
 const ToDoLists = () => {
-    const [name, setName] = useState('')
+    const [text, setText] = useState('')
     const dispatch = useDispatch();
     // @ts-ignore
     const todo = useSelector((state) => state.todo);
@@ -20,10 +20,11 @@ const ToDoLists = () => {
 
 
     const addNewTaskHandler = () => {
-        if (name) {
-            dispatch(addTodoAsync(name))
+        if (text) {
+        dispatch(addTodoAsync(text))
         }
-        setName('')
+
+        setText('')
     }
 
 
@@ -38,8 +39,8 @@ const ToDoLists = () => {
             <View style={styles.actions}>
                 <TextInput
                     style={styles.input}
-                    value={name}
-                    onChangeText={text => setName(text)}
+                    value={text}
+                    onChangeText={text => setText(text)}
                     placeholder='What are you going to do?'
                 />
                 <Button
@@ -70,7 +71,7 @@ const ToDoLists = () => {
                         <ToDoItem
                             key={`_todo_${t.id}`}
                             id={t.id}
-                            name={t.title}
+                            text={t.title}
                             IsCompleted={t.IsCompleted}
                             deleteTodo={deleteTodo}
                         />
