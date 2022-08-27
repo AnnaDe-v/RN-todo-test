@@ -1,24 +1,31 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-export type todoType = {
+export type listType = {
     id: string
     title: string
     IsCompleted: boolean
 }
 
+type TodosState = {
+    list: listType[]
+    loading: boolean
+    error: string | null
+}
 
-export const getTodosAsync = createAsyncThunk(
+export const getTodosAsync = createAsyncThunk<listType[], undefined, { rejectValue: string }>(
     'todo/getTodosAsync',
-    async () => {
+    async function (_, {rejectWithValue}) {
         const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo');
-        if (resp.ok) {
-            const todoFormResp = await resp.json();
-            return {todo: todoFormResp};
+        if (!resp.ok) {
+            return rejectWithValue('Server Error!');
         }
+
+        const todoFormResp = await resp.json();
+        return todoFormResp
     }
 );
 
-export const addTodoAsync = createAsyncThunk(
+export const addTodoAsync = createAsyncThunk<listType, string, { rejectValue: string }>(
     'todo/addTodoAsync',
     async function (text, {rejectWithValue, dispatch}) {
         console.log(text)
@@ -26,36 +33,32 @@ export const addTodoAsync = createAsyncThunk(
             title: text,
             IsCompleted: false
         }
-        try {
-            const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8',
-                    },
-                    body: JSON.stringify(todoObj),
-                }
-            );
-            if (!resp.ok) {
-                throw new Error("Server error. New task can't add")
+        const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                },
+                body: JSON.stringify(todoObj),
             }
-            const data = await resp.json()
-            dispatch(addTodo(data))
-        } catch (error) {
-            return rejectWithValue(error.message)
+        );
+        if (!resp.ok) {
+            return rejectWithValue('Server Error!');
         }
 
+        const data = await resp.json()
+        return data as listType
     }
 );
 
-export const toggleCompleteAsync = createAsyncThunk(
+export const toggleCompleteAsync = createAsyncThunk<listType, string, { rejectValue: string, state: { todo: TodosState } }>(
     'todo/completeTodoAsync',
-    async function ({id}, {rejectWithValue, dispatch, getState}) {
-        const todo = getState().todo.find(todo => todo.id === id)
+    async function (id, {rejectWithValue, dispatch, getState}) {
+        const todo = getState().todo.list.find(todo => todo.id === id)
 
-        try {
+        if (todo) {
             const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${id}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
                 },
@@ -63,73 +66,81 @@ export const toggleCompleteAsync = createAsyncThunk(
             });
 
             if (!resp.ok) {
-                throw new Error("Server error. Toggle status can't change")
+                return rejectWithValue('Server Error!');
             }
-            dispatch(toggleComplete({id}))
-
-        } catch (error) {
-            return rejectWithValue(error.message)
+            const data = await resp.json()
+            return data as listType
         }
-
+        return rejectWithValue('No todo');
 
     }
 );
 
 
-export const deleteTodoAsync = createAsyncThunk(
+export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: string }>(
     'todo/deleteTodoAsync',
-    async (id, {rejectWithValue, dispatch}) => {
-        try {
-            const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${id}`, {
-                method: 'DELETE',
-            });
-            if (!resp.ok) {
-                throw new Error("Server error. The task can't remove")
-            }
-            dispatch(deleteTodo({id}))
-
-        } catch (error) {
-            rejectWithValue(error.message)
+    async function (id, {rejectWithValue}) {
+        const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${id}`, {
+            method: 'DELETE',
+        });
+        if (!resp.ok) {
+            return rejectWithValue('Server Error!');
         }
+
+        return id
     }
 );
 
+const initialState: TodosState = {
+    list: [],
+    loading: false,
+    error: null
+}
 
 export const todoSlice = createSlice({
     name: 'todo',
-    initialState: [],
-    reducers: {
-        addTodo: (state, action) => {
-            state.push(action.payload);
-        },
-        toggleComplete: (state, action) => {
-            const toggledTodo = state.find((todo) => todo.id === action.payload.id);
-            toggledTodo.IsCompleted = !toggledTodo.IsCompleted;
-        },
-        deleteTodo: (state, action) => {
-            return state.filter((todo) => todo.id !== action.payload.id);
-        },
-    },
-
-    extraReducers: {
-        [getTodosAsync.fulfilled]: (state, action) => {
-            return action.payload.todo;
-        },
-        [addTodoAsync.fulfilled]: (state, action) => {
-            state.todo.push(action.payload);
-        },
-        [toggleCompleteAsync.fulfilled]: (state, action) => {
-            const index = state.findIndex(
-                (todo) => todo.id === action.payload.todo.id
-            );
-            return state[index].IsCompleted = action.payload.IsCompleted;
-        },
-        [deleteTodoAsync.fulfilled]: (state, action) => {
-            return state.filter((todo) => todo.id !== action.payload.id);
-        },
-    },
+    initialState,
+    reducers: {},
+    extraReducers: (builder => {
+        builder
+            .addCase(getTodosAsync.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(getTodosAsync.fulfilled, (state, action) => {
+                state.list = action.payload
+                state.loading = false
+            })
+            .addCase(addTodoAsync.pending, (state) => {
+                state.error = null
+            })
+            .addCase(addTodoAsync.fulfilled, (state, action) => {
+                state.list.push(action.payload)
+            })
+            .addCase(toggleCompleteAsync.pending, (state) => {
+                state.error = null
+            })
+            .addCase(toggleCompleteAsync.fulfilled, (state, action) => {
+                const toggledTodo = state.list.find((todo) => todo.id === action.payload.id);
+                toggledTodo.IsCompleted = !toggledTodo.IsCompleted;
+            })
+            .addCase(deleteTodoAsync.pending, (state) => {
+                state.error = null
+            })
+            .addCase(deleteTodoAsync.fulfilled, (state, action) => {
+                state.list = state.list.filter((todo) => todo.id !== action.payload);
+            })
+            .addMatcher(Error, (state, action: PayloadAction<string>) => {
+                state.error = action.payload;
+                state.loading = false;
+            });
+    })
 });
 
 export const {addTodo, toggleComplete, deleteTodo} = todoSlice.actions;
 
 export default todoSlice.reducer;
+
+function Error(action: AnyAction) {
+    return action.type.endsWith('rejected');
+}

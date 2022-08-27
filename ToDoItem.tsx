@@ -7,11 +7,8 @@ import {useDispatch} from "react-redux";
 const ToDoItem = ({id, text, IsCompleted, deleteTodo}) => {
     const dispatch = useDispatch()
 
-
-
     const handleCheckboxClick = () => {
-        dispatch(toggleCompleteAsync({ id }));
-
+        dispatch(toggleCompleteAsync(id));
     };
 
     return (

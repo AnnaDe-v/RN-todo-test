@@ -2,17 +2,16 @@ import React, {useEffect, useState} from 'react';
 import {Dimensions, FlatList, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
 import {Button} from "@rneui/themed";
 import ToDoItem from "./ToDoItem";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {addTodoAsync, deleteTodoAsync, getTodosAsync} from "./redux/todoSlice";
+import {useAppSelector} from './hooks';
 
 
-
-const ToDoLists = () => {
+const ToDoLists: React.FC = () => {
     const [text, setText] = useState('')
     const dispatch = useDispatch();
-    // @ts-ignore
-    const todo = useSelector((state) => state.todo);
-
+    const todo = useAppSelector((state) => state.todo.list);
+    const loading = useAppSelector((state) => state.todo.loading);
 
     useEffect(() => {
         dispatch(getTodosAsync());
@@ -20,8 +19,8 @@ const ToDoLists = () => {
 
 
     const addNewTaskHandler = () => {
-        if (text) {
-        dispatch(addTodoAsync(text))
+        if (text.trim().length) {
+            dispatch(addTodoAsync(text))
         }
 
         setText('')
@@ -60,16 +59,23 @@ const ToDoLists = () => {
                 }}
 
             >
-                {todo &&
-                    todo.map((t) => (
-                        <ToDoItem
-                            key={`_todo_${t.id}`}
-                            id={t.id}
-                            text={t.title}
-                            IsCompleted={t.IsCompleted}
-                            deleteTodo={deleteTodo}
-                        />
-                    ))}
+
+                {
+                    !loading ? (
+                        todo.map((t) => (
+                            <ToDoItem
+                                key={`_todo_${t.id}`}
+                                id={t.id}
+                                text={t.title}
+                                IsCompleted={t.IsCompleted}
+                                deleteTodo={deleteTodo}
+                            />
+                        ))) : (
+                        <View style={{alignItems: 'center'}}>
+                            <Text style={{fontSize: 18}}>Loading...</Text>
+                        </View>
+                    )
+                }
             </ScrollView>
         </View>
     );
