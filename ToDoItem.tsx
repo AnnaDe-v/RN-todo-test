@@ -1,86 +1,80 @@
-import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Switch} from "react-native";
-import {Feather} from '@expo/vector-icons';
-import {toggleCompleteAsync} from "./redux/todoSlice";
+import React, {useEffect, useState} from 'react';
+import {Button, Dimensions, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import TaskItem from "./TaskItem";
 import {useDispatch} from "react-redux";
-import {collection, addDoc, doc} from "firebase/firestore";
-import {db} from "./firebase";
+import {addTodoAsync, deleteTodoAsync, getTodosAsync} from "./redux/todoSlice";
+import {useAppSelector} from './hooks';
+import InputBlock from "./InputBlock";
 
 
-const ToDoItem = ({id, text, IsCompleted, deleteTodo}) => {
-    const dispatch = useDispatch()
+const ToDoItem: React.FC = () => {
+    const [text, setText] = useState('')
+    const dispatch = useDispatch();
+    const todo = useAppSelector((state) => state.todo.list);
+    const {loading, error} = useAppSelector((state) => state.todo);
 
-    const handleCheckboxClick = () => {
-        dispatch(toggleCompleteAsync(id));
-    };
 
-    const addTodoToFirebase = async function () {
-        const newTodo = doc(collection(db, 'todos'))
-        const dataForTodo = {
-            todoTitle: text,
-            todoId: newTodo.id,
-            taskList: [
-                {
-                    taskId: '1',
-                    taskTitle: 'New task',
-                    IsCompleted: false,
-                },
-            ]
+    useEffect(() => {
+        dispatch(getTodosAsync());
+    }, [dispatch]);
+
+
+    const addNewTaskHandler = () => {
+        if (text.trim().length) {
+            dispatch(addTodoAsync(text))
         }
-        await addDoc(collection(db, "todos"), dataForTodo);
+
+        setText('')
     }
 
 
+    const deleteTodo = id => {
+        dispatch(deleteTodoAsync(id))
+    }
+
     return (
-        <TouchableHighlight
-            underlayColor='transparent'
-            onPress={handleCheckboxClick}>
-            <View
-                style={styles.item}
+        <View style={styles.container}>
+            <Text style={styles.heading}>TODO</Text>
+            <InputBlock text={text} setText={setText} addNewTaskHandler={addNewTaskHandler}/>
+            <ScrollView
+                contentContainerStyle={{
+                    paddingTop: 20,
+                    paddingBottom: 400,
+                }}
             >
-                <View style={{
-                    flex: 1,
-                    alignItems: "center",
-                    justifyContent: "center"
-                }}>
-                    <Switch
-                        trackColor={{false: "#767577", true: "rgb(123,72,243)"}}
-                        thumbColor={IsCompleted ? "#f5dd4b" : "#f4f3f4"}
-                        onValueChange={handleCheckboxClick}
-                        value={IsCompleted}
-                    />
-                </View>
-                <Text style={styles.name}>{text}</Text>
-                <TouchableOpacity onPress={() => deleteTodo(id)}>
-                    <Feather name="trash" size={24} color="red"/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={addTodoToFirebase}>
-                    <Text>POKE</Text>
-                </TouchableOpacity>
-
-            </View>
-        </TouchableHighlight>
-
+                {!error && <View style={{alignItems: 'center'}}><Text style={{fontSize: 18, color: 'red'}}>{error}</Text></View>}
+                {
+                    !loading ? (
+                        todo.map((t) => (
+                            <TaskItem
+                                key={`_todo_${t.id}`}
+                                id={t.id}
+                                text={t.title}
+                                IsCompleted={t.IsCompleted}
+                                deleteTodo={deleteTodo}
+                            />
+                        ))) : (
+                        <View style={{alignItems: 'center'}}>
+                            <Text style={{fontSize: 18}}>Loading...</Text>
+                        </View>
+                    )
+                }
+            </ScrollView>
+        </View>
     );
 };
 
-const styles = StyleSheet.create({
-    item: {
-        backgroundColor: '#eee1f5',
-        borderRadius: 10,
-        width: '90%',
-        alignItems: 'center',
-        padding: 10,
-        marginBottom: 10,
-        marginHorizontal: '5%',
-        flexDirection: 'row',
-    },
-    name: {
-        fontSize: 18,
-        marginLeft: 5,
-        flex: 1,
-        flexWrap: 'wrap',
-    }
-})
-
-
 export default ToDoItem;
+
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#fff',
+        paddingTop: '12%',
+    },
+    heading: {
+        textAlign: 'center',
+        fontSize: 25,
+        fontWeight: 'bold',
+    },
+});

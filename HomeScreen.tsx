@@ -1,29 +1,14 @@
-import { Button } from '@rneui/themed';
+import { Button } from 'react-native';
 import React from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import ToDoList from "./ToDoList";
 
 function HomeScreen ({navigation}) {
-    const array = [
-        {
-            todoId: '1',
-            titleTodo: 'Work'
-        },
-        {
-            todoId: '2',
-            titleTodo: 'Home'
-        },
-    ]
+
 
     return (
             <View style={{backgroundColor: '#a9eeb4', alignItems: 'center'}}>
-                {
-                    array.map(t => (
-                        <View key={t.todoId} style={{backgroundColor: '#a7d061', width: '80%'}}>
-                            <Text style={{padding: 10}} onPress={() => navigation.navigate('Main')}>{t.titleTodo}</Text>
-                        </View>
-
-                    ))
-                }
+                <ToDoList/>
                 <Button onPress={() => navigation.navigate('Main')} title='to main'/>
             </View>
     )
