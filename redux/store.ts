@@ -3,7 +3,10 @@ import  todoReducer from './todoSlice';
 
 
 const rootReducer = combineReducers({
-    todo: todoReducer
+    todo: todoReducer,
+    // task: taskReducer,
+    // app: appReducer,
+
 })
 
 export type rootStates = ReturnType<typeof rootReducer>

@@ -33,6 +33,7 @@ export const getTodosAsync = createAsyncThunk<listType[], undefined, { rejectVal
 export const addTodoAsync = createAsyncThunk<listType, string, { rejectValue: string }>(
     'todo/addTodoAsync',
     async function (text, {rejectWithValue, dispatch}) {
+        console.log(text)
         const todoObj = {
             title: text,
             IsCompleted: false

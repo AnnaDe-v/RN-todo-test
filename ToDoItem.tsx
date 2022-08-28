@@ -1,9 +1,8 @@
-import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity} from "react-native";
-import {CheckBox} from "@rneui/themed";
-import { Feather } from '@expo/vector-icons';
+import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Switch} from "react-native";
+import {Feather} from '@expo/vector-icons';
 import {toggleCompleteAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
-import { collection, addDoc, doc } from "firebase/firestore";
+import {collection, addDoc, doc} from "firebase/firestore";
 import {db} from "./firebase";
 
 
@@ -14,10 +13,8 @@ const ToDoItem = ({id, text, IsCompleted, deleteTodo}) => {
         dispatch(toggleCompleteAsync(id));
     };
 
-    const addTodoToFirebase = async function (){
-
+    const addTodoToFirebase = async function () {
         const newTodo = doc(collection(db, 'todos'))
-
         const dataForTodo = {
             todoTitle: text,
             todoId: newTodo.id,
@@ -40,14 +37,21 @@ const ToDoItem = ({id, text, IsCompleted, deleteTodo}) => {
             <View
                 style={styles.item}
             >
-                <CheckBox
-                    onPress={handleCheckboxClick}
-                    checked={IsCompleted}
-                    containerStyle={{backgroundColor: '#eee1f5'}}
-                />
+                <View style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}>
+                    <Switch
+                        trackColor={{false: "#767577", true: "rgb(123,72,243)"}}
+                        thumbColor={IsCompleted ? "#f5dd4b" : "#f4f3f4"}
+                        onValueChange={handleCheckboxClick}
+                        value={IsCompleted}
+                    />
+                </View>
                 <Text style={styles.name}>{text}</Text>
-                <TouchableOpacity onPress={() => deleteTodo(id) }>
-                    <Feather name="trash" size={24} color="red"  />
+                <TouchableOpacity onPress={() => deleteTodo(id)}>
+                    <Feather name="trash" size={24} color="red"/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={addTodoToFirebase}>
                     <Text>POKE</Text>

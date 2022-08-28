@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, FlatList, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
-import {Button} from "@rneui/themed";
+import {Button, Dimensions, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import ToDoItem from "./ToDoItem";
 import {useDispatch} from "react-redux";
 import {addTodoAsync, deleteTodoAsync, getTodosAsync} from "./redux/todoSlice";
 import {useAppSelector} from './hooks';
+import InputBlock from "./InputBlock";
 
 
 const ToDoLists: React.FC = () => {
@@ -35,29 +35,12 @@ const ToDoLists: React.FC = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>TODO</Text>
-            <View style={styles.actions}>
-                <TextInput
-                    style={styles.input}
-                    value={text}
-                    onChangeText={text => setText(text)}
-                    placeholder='What are you going to do?'
-                />
-                <Button
-                    title="Add"
-                    onPress={addNewTaskHandler}
-                    buttonStyle={{
-                        backgroundColor: 'rgb(123,72,243)',
-                        borderRadius: 10,
-                    }}
-                />
-            </View>
+            <InputBlock text={text} setText={setText} addNewTaskHandler={addNewTaskHandler}/>
             <ScrollView
-
                 contentContainerStyle={{
                     paddingTop: 20,
                     paddingBottom: 400,
                 }}
-
             >
                 {!error && <View style={{alignItems: 'center'}}><Text style={{fontSize: 18, color: 'red'}}>{error}</Text></View>}
                 {
@@ -94,15 +77,4 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold',
     },
-    actions: {
-        padding: 20,
-    },
-    input: {
-        borderRadius: 20,
-        width: '70%',
-        fontSize: 20,
-        marginVertical: 25,
-        marginHorizontal: '15%'
-    },
-
 });
