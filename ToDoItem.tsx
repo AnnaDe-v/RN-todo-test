@@ -1,8 +1,11 @@
-import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, LogBox} from "react-native";
+import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity} from "react-native";
 import {CheckBox} from "@rneui/themed";
 import { Feather } from '@expo/vector-icons';
 import {toggleCompleteAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
+import { collection, addDoc, doc } from "firebase/firestore";
+import {db} from "./firebase";
+
 
 const ToDoItem = ({id, text, IsCompleted, deleteTodo}) => {
     const dispatch = useDispatch()
@@ -10,6 +13,25 @@ const ToDoItem = ({id, text, IsCompleted, deleteTodo}) => {
     const handleCheckboxClick = () => {
         dispatch(toggleCompleteAsync(id));
     };
+
+    const addTodoToFirebase = async function (){
+
+        const newTodo = doc(collection(db, 'todos'))
+
+        const dataForTodo = {
+            todoTitle: text,
+            todoId: newTodo.id,
+            taskList: [
+                {
+                    taskId: '1',
+                    taskTitle: 'New task',
+                    IsCompleted: false,
+                },
+            ]
+        }
+        await addDoc(collection(db, "todos"), dataForTodo);
+    }
+
 
     return (
         <TouchableHighlight
@@ -21,10 +43,14 @@ const ToDoItem = ({id, text, IsCompleted, deleteTodo}) => {
                 <CheckBox
                     onPress={handleCheckboxClick}
                     checked={IsCompleted}
+                    containerStyle={{backgroundColor: '#eee1f5'}}
                 />
                 <Text style={styles.name}>{text}</Text>
                 <TouchableOpacity onPress={() => deleteTodo(id) }>
-                    <Feather name="trash" size={24} color="black"  />
+                    <Feather name="trash" size={24} color="red"  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={addTodoToFirebase}>
+                    <Text>POKE</Text>
                 </TouchableOpacity>
 
             </View>

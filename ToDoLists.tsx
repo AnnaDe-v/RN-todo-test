@@ -11,7 +11,8 @@ const ToDoLists: React.FC = () => {
     const [text, setText] = useState('')
     const dispatch = useDispatch();
     const todo = useAppSelector((state) => state.todo.list);
-    const loading = useAppSelector((state) => state.todo.loading);
+    const {loading, error} = useAppSelector((state) => state.todo);
+
 
     useEffect(() => {
         dispatch(getTodosAsync());
@@ -30,7 +31,6 @@ const ToDoLists: React.FC = () => {
     const deleteTodo = id => {
         dispatch(deleteTodoAsync(id))
     }
-
 
     return (
         <View style={styles.container}>
@@ -59,7 +59,7 @@ const ToDoLists: React.FC = () => {
                 }}
 
             >
-
+                {!error && <View style={{alignItems: 'center'}}><Text style={{fontSize: 18, color: 'red'}}>{error}</Text></View>}
                 {
                     !loading ? (
                         todo.map((t) => (

@@ -12,16 +12,21 @@ type TodosState = {
     error: string | null
 }
 
+function Error(action: AnyAction) {
+    return action.type.endsWith('rejected');
+}
+
 export const getTodosAsync = createAsyncThunk<listType[], undefined, { rejectValue: string }>(
     'todo/getTodosAsync',
     async function (_, {rejectWithValue}) {
-        const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo');
+        const resp = await fetch('https://630a5a4a324991003284bd51.mockapi.io/todolist');
+
         if (!resp.ok) {
             return rejectWithValue('Server Error!');
         }
 
         const todoFormResp = await resp.json();
-        return todoFormResp
+        return todoFormResp as listType[]
     }
 );
 
@@ -33,7 +38,7 @@ export const addTodoAsync = createAsyncThunk<listType, string, { rejectValue: st
             title: text,
             IsCompleted: false
         }
-        const resp = await fetch('https://6305e272697408f7edcd6d37.mockapi.io/todo',
+        const resp = await fetch('https://630a5a4a324991003284bd51.mockapi.io/todolist',
             {
                 method: 'POST',
                 headers: {
@@ -47,7 +52,7 @@ export const addTodoAsync = createAsyncThunk<listType, string, { rejectValue: st
         }
 
         const data = await resp.json()
-        return data as listType
+        return data
     }
 );
 
@@ -57,7 +62,7 @@ export const toggleCompleteAsync = createAsyncThunk<listType, string, { rejectVa
         const todo = getState().todo.list.find(todo => todo.id === id)
 
         if (todo) {
-            const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${id}`, {
+            const resp = await fetch(`https://630a5a4a324991003284bd51.mockapi.io/todolist/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
@@ -80,7 +85,7 @@ export const toggleCompleteAsync = createAsyncThunk<listType, string, { rejectVa
 export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: string }>(
     'todo/deleteTodoAsync',
     async function (id, {rejectWithValue}) {
-        const resp = await fetch(`https://6305e272697408f7edcd6d37.mockapi.io/todo/${id}`, {
+        const resp = await fetch(`https://630a5a4a324991003284bd51.mockapi.io/todolist/${id}`, {
             method: 'DELETE',
         });
         if (!resp.ok) {
@@ -136,11 +141,4 @@ export const todoSlice = createSlice({
             });
     })
 });
-
-export const {addTodo, toggleComplete, deleteTodo} = todoSlice.actions;
-
 export default todoSlice.reducer;
-
-function Error(action: AnyAction) {
-    return action.type.endsWith('rejected');
-}
