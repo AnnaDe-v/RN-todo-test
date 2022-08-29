@@ -1,6 +1,7 @@
 import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {collection, doc, getDocs, onSnapshot, query, setDoc} from 'firebase/firestore';
 import {db} from "../firebase";
+import {v4 as uuidv4} from 'uuid';
 
 export type todoType = {
     todoTitle: string
@@ -47,20 +48,6 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
 
 
 
-// export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectValue: string }>(
-//     'todo/getTodosAsync',
-//     async function (_, {rejectWithValue}) {
-//         const resp = await fetch('https://630a5a4a324991003284bd51.mockapi.io/todolist');
-//
-//         if (!resp.ok) {
-//             return rejectWithValue('Server Error!');
-//         }
-//
-//         const todoFormResp = await resp.json();
-//         return todoFormResp as todoType[]
-//     }
-// );
-
 export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: string }>(
     'todo/addTodoAsync',
     async function (text, {rejectWithValue, dispatch}) {
@@ -76,6 +63,31 @@ export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: st
 
     }
 );
+
+export const addTaskAsync = createAsyncThunk<todoType, string, { rejectValue: string }>(
+    'todo/addTodoAsync',
+    async function (localTodoId, text, {rejectWithValue, dispatch}) {
+
+        const q = query(collection(db, "todos"));
+            const querySnapshot = await getDocs(q);
+            const queryData = querySnapshot.docs.map((t) => ({
+                ...t.data(),
+                id: t.id,
+            }));
+            console.log(queryData);
+
+            queryData.map(async (v) => {
+                await setDoc(doc(db, `todos/${localTodoId}/tasksList/${uuidv4()}`), {
+                    taskId: Date.now().toLocaleString(),
+                    taskTitle: 'New task',
+                    IsCompleted: false,
+                });
+            })
+
+    }
+);
+
+
 //
 // export const toggleCompleteAsync = createAsyncThunk<todoType, string, { rejectValue: string, state: { todo: TodosState } }>(
 //     'todo/completeTodoAsync',

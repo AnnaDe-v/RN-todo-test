@@ -6,12 +6,10 @@ import {v4 as uuidv4} from 'uuid';
 import {useDispatch} from "react-redux";
 import {getTodosAsync} from "./redux/todoSlice";
 import {useAppSelector} from "./hooks";
-
+import TodoItem from './TodoItem';
 
 
 const ToDoList = () => {
-
-    const [localTodoId, setLocalTodoId] = useState(null)
     const todoList = useAppSelector(state => state.todo.list)
     const dispatch = useDispatch()
 
@@ -24,61 +22,34 @@ const ToDoList = () => {
     }, [dispatch]);
 
 
-
-
-
-    // const addTodoToFirebase = async function () {
-    //     const newTodo = doc(collection(db, 'todos'))
-    //     const dataForTodo = {
-    //         todoTitle: 'two todo',
-    //         todoId: newTodo.id,
-    //     }
-    //     await setDoc(newTodo, dataForTodo);
-    //
-    //     setLocalTodoId(newTodo.id)
-    //     console.log(localTodoId)
-    //
-    // }
-
-
-
-
-    const addTaskToFirebase = async function () {
-        const q = query(collection(db, "todos"));
-        const querySnapshot = await getDocs(q);
-        const queryData = querySnapshot.docs.map((t) => ({
-            ...t.data(),
-            id: t.id,
-        }));
-        console.log(queryData);
-
-        queryData.map(async (v) => {
-            await setDoc(doc(db, `todos/${localTodoId}/tasksList/${uuidv4()}`), {
-                taskId: Date.now().toLocaleString(),
-                taskTitle: 'New task',
-                IsCompleted: false,
-            });
-        })
+    const deleteTodo = (id) => {
+        console.log(id)
     }
+
+    // const addTaskToFirebase = async function () {
+    //     const q = query(collection(db, "todos"));
+    //     const querySnapshot = await getDocs(q);
+    //     const queryData = querySnapshot.docs.map((t) => ({
+    //         ...t.data(),
+    //         id: t.id,
+    //     }));
+    //     console.log(queryData);
+    //
+    //     queryData.map(async (v) => {
+    //         await setDoc(doc(db, `todos/${localTodoId}/tasksList/${uuidv4()}`), {
+    //             taskId: Date.now().toLocaleString(),
+    //             taskTitle: 'New task',
+    //             IsCompleted: false,
+    //         });
+    //     })
+    // }
 
 
     return (
         <View>
-            <TouchableOpacity onPress={addTaskToFirebase}>
-                <Text>addtask</Text>
-            </TouchableOpacity>
-            {/*<TouchableOpacity onPress={addTodoToFirebase}>*/}
-            {/*    <Text>addTodo</Text>*/}
-            {/*</TouchableOpacity>*/}
-            {/*<TouchableOpacity  onPress={handleSubmit}>*/}
-            {/*    <Text>GET</Text>*/}
-            {/*</TouchableOpacity>*/}
             {
                 todoList.map(t => (
-                    <View key={t.todoId} style={{backgroundColor: '#a7d061', width: '80%'}}>
-                        <Text style={{padding: 10}}>{t.todoTitle}</Text>
-                    </View>
-
+                    <TodoItem text={t.todoTitle} id={t.todoId} deleteTodo={deleteTodo}/>
                 ))
             }
         </View>
