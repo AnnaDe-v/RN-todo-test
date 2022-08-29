@@ -14,9 +14,9 @@ const ToDoItems: React.FC = () => {
     const {loading, error} = useAppSelector((state) => state.todo);
 
 
-    useEffect(() => {
-        dispatch(getTodosAsync());
-    }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(getTodosAsync());
+    // }, [dispatch]);
 
 
     const addNewTaskHandler = () => {
@@ -35,7 +35,11 @@ const ToDoItems: React.FC = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>TODO</Text>
+
+
             <InputBlock text={text} setText={setText} addNewTaskHandler={addNewTaskHandler}/>
+
+
             <ScrollView
                 contentContainerStyle={{
                     paddingTop: 20,
@@ -43,22 +47,22 @@ const ToDoItems: React.FC = () => {
                 }}
             >
                 {!error && <View style={{alignItems: 'center'}}><Text style={{fontSize: 18, color: 'red'}}>{error}</Text></View>}
-                {
-                    !loading ? (
-                        todo.map((t) => (
-                            <TaskItem
-                                key={`_todo_${t.id}`}
-                                id={t.id}
-                                text={t.title}
-                                IsCompleted={t.IsCompleted}
-                                deleteTodo={deleteTodo}
-                            />
-                        ))) : (
-                        <View style={{alignItems: 'center'}}>
-                            <Text style={{fontSize: 18}}>Loading...</Text>
-                        </View>
-                    )
-                }
+                {/*{*/}
+                {/*    !loading ? (*/}
+                {/*        todo.map((t) => (*/}
+                {/*            <TaskItem*/}
+                {/*                key={`_todo_${t.todoId}`}*/}
+                {/*                id={t.todoId}*/}
+                {/*                text={t.tasksList}*/}
+                {/*                IsCompleted={t.IsCompleted}*/}
+                {/*                deleteTodo={deleteTodo}*/}
+                {/*            />*/}
+                {/*        ))) : (*/}
+                {/*        <View style={{alignItems: 'center'}}>*/}
+                {/*            <Text style={{fontSize: 18}}>Loading...</Text>*/}
+                {/*        </View>*/}
+                {/*    )*/}
+                {/*}*/}
             </ScrollView>
         </View>
     );

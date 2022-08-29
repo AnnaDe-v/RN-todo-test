@@ -1,13 +1,16 @@
 import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-export type listType = {
+export type todoType = {
     id: string
     title: string
     IsCompleted: boolean
 }
 
+
+
+
 type TodosState = {
-    list: listType[]
+    list: todoType[]
     loading: boolean
     error: string | null
 }
@@ -16,8 +19,10 @@ function Error(action: AnyAction) {
     return action.type.endsWith('rejected');
 }
 
-export const getTodosAsync = createAsyncThunk<listType[], undefined, { rejectValue: string }>(
+export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectValue: string }>(
     'todo/getTodosAsync',
+
+
     async function (_, {rejectWithValue}) {
         const resp = await fetch('https://630a5a4a324991003284bd51.mockapi.io/todolist');
 
@@ -25,15 +30,33 @@ export const getTodosAsync = createAsyncThunk<listType[], undefined, { rejectVal
             return rejectWithValue('Server Error!');
         }
 
+
+
+
         const todoFormResp = await resp.json();
-        return todoFormResp as listType[]
+        return todoFormResp as todoType[]
     }
 );
 
-export const addTodoAsync = createAsyncThunk<listType, string, { rejectValue: string }>(
+
+
+// export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectValue: string }>(
+//     'todo/getTodosAsync',
+//     async function (_, {rejectWithValue}) {
+//         const resp = await fetch('https://630a5a4a324991003284bd51.mockapi.io/todolist');
+//
+//         if (!resp.ok) {
+//             return rejectWithValue('Server Error!');
+//         }
+//
+//         const todoFormResp = await resp.json();
+//         return todoFormResp as todoType[]
+//     }
+// );
+
+export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: string }>(
     'todo/addTodoAsync',
     async function (text, {rejectWithValue, dispatch}) {
-        console.log(text)
         const todoObj = {
             title: text,
             IsCompleted: false
@@ -56,7 +79,7 @@ export const addTodoAsync = createAsyncThunk<listType, string, { rejectValue: st
     }
 );
 
-export const toggleCompleteAsync = createAsyncThunk<listType, string, { rejectValue: string, state: { todo: TodosState } }>(
+export const toggleCompleteAsync = createAsyncThunk<todoType, string, { rejectValue: string, state: { todo: TodosState } }>(
     'todo/completeTodoAsync',
     async function (id, {rejectWithValue, dispatch, getState}) {
         const todo = getState().todo.list.find(todo => todo.id === id)
@@ -74,7 +97,7 @@ export const toggleCompleteAsync = createAsyncThunk<listType, string, { rejectVa
                 return rejectWithValue('Server Error!');
             }
             const data = await resp.json()
-            return data as listType
+            return data as todoType
         }
         return rejectWithValue('No todo');
 

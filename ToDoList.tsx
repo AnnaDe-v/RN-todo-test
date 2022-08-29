@@ -1,34 +1,46 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, TouchableOpacity, View} from "react-native";
 import {addDoc, collection, doc, getDocs, query, setDoc} from "firebase/firestore";
 import {db} from "./firebase";
 import {v4 as uuidv4} from 'uuid';
+import {useDispatch} from "react-redux";
+import {getTodosAsync} from "./redux/todoSlice";
+import {useAppSelector} from "./hooks";
 
 
 
 const ToDoList = () => {
 
-    const [arrayTodolist, setArrayTodolist] = useState([])
-
-
-    const postsCollectionsRef = collection(db, "todos")
-
-
     const [localTodoId, setLocalTodoId] = useState(null)
+    const todoList = useAppSelector(state => state.todo.list)
+    const dispatch = useDispatch()
 
 
-    const addTodoToFirebase = async function () {
-        const newTodo = doc(collection(db, 'todos'))
-        const dataForTodo = {
-            todoTitle: 'onetodo',
-            todoId: newTodo.id,
-        }
-        await setDoc(newTodo, dataForTodo);
+    console.log(todoList)
 
-        setLocalTodoId(newTodo.id)
-        console.log(localTodoId)
 
-    }
+    useEffect(() => {
+        dispatch(getTodosAsync());
+    }, [dispatch]);
+
+
+
+
+
+    // const addTodoToFirebase = async function () {
+    //     const newTodo = doc(collection(db, 'todos'))
+    //     const dataForTodo = {
+    //         todoTitle: 'two todo',
+    //         todoId: newTodo.id,
+    //     }
+    //     await setDoc(newTodo, dataForTodo);
+    //
+    //     setLocalTodoId(newTodo.id)
+    //     console.log(localTodoId)
+    //
+    // }
+
+
 
 
     const addTaskToFirebase = async function () {
@@ -55,18 +67,16 @@ const ToDoList = () => {
             <TouchableOpacity onPress={addTaskToFirebase}>
                 <Text>addtask</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={addTodoToFirebase}>
-                <Text>addTodo</Text>
-            </TouchableOpacity>
+            {/*<TouchableOpacity onPress={addTodoToFirebase}>*/}
+            {/*    <Text>addTodo</Text>*/}
+            {/*</TouchableOpacity>*/}
             {/*<TouchableOpacity  onPress={handleSubmit}>*/}
             {/*    <Text>GET</Text>*/}
             {/*</TouchableOpacity>*/}
             {
-                arrayTodolist.map(t => (
+                todoList.map(t => (
                     <View key={t.todoId} style={{backgroundColor: '#a7d061', width: '80%'}}>
                         <Text style={{padding: 10}}>{t.todoTitle}</Text>
-                        <Text style={{padding: 10}}>{t.taskList.taskTitle}</Text>
-                        <Text style={{padding: 10}}>{t.todoId}</Text>
                     </View>
 
                 ))
