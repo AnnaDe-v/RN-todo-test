@@ -7,7 +7,7 @@ import {useAppSelector} from './hooks';
 import InputBlock from "./InputBlock";
 
 
-const ToDoItem: React.FC = () => {
+const ToDoItems: React.FC = () => {
     const [text, setText] = useState('')
     const dispatch = useDispatch();
     const todo = useAppSelector((state) => state.todo.list);
@@ -64,7 +64,7 @@ const ToDoItem: React.FC = () => {
     );
 };
 
-export default ToDoItem;
+export default ToDoItems;
 
 
 const styles = StyleSheet.create({

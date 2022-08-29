@@ -6,13 +6,17 @@ import {collection, addDoc, doc, setDoc, getDocs} from "firebase/firestore";
 import {db} from "./firebase";
 
 
-const TaskItem = ({id, text, IsCompleted, deleteTodo}) => {
+const TodoItem = ({id, text, IsCompleted, deleteTodo}) => {
     const dispatch = useDispatch()
 
 
     const handleCheckboxClick = () => {
         dispatch(toggleCompleteAsync(id));
     };
+
+
+
+
 
 
     return (
@@ -38,6 +42,8 @@ const TaskItem = ({id, text, IsCompleted, deleteTodo}) => {
                 <TouchableOpacity onPress={() => deleteTodo(id)}>
                     <Feather name="trash" size={24} color="red"/>
                 </TouchableOpacity>
+
+
             </View>
         </TouchableHighlight>
 
@@ -64,4 +70,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default TaskItem;
+export default TodoItem;
