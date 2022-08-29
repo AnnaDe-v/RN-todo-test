@@ -7,8 +7,6 @@ import ToDoList from './ToDoList';
 
 
 function HomeScreen ({navigation}) {
-
-
     return (
             <View style={{backgroundColor: '#a9eeb4', alignItems: 'center'}}>
                 <ToDoList/>
