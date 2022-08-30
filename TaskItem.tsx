@@ -2,8 +2,6 @@ import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Switch} fr
 import {Feather} from '@expo/vector-icons';
 import {toggleCompleteAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
-import {collection, addDoc, doc, setDoc, getDocs} from "firebase/firestore";
-import {db} from "./firebase";
 
 
 const TaskItem = ({id, text, IsCompleted, deleteTodo}) => {

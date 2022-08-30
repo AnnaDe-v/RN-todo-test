@@ -22,13 +22,10 @@ function HomeScreen ({navigation}) {
     }
 
 
-
-
     return (
             <View style={{backgroundColor: '#a9eeb4', alignItems: 'center'}}>
                 <InputBlock addNewTodoHandler={addNewTodoHandler} setText={setText} text={text}/>
                 <ToDoList navigation={navigation}/>
-                {/*<Button onPress={() => navigation.navigate('Main')} title='to main'/>*/}
             </View>
     )
 }

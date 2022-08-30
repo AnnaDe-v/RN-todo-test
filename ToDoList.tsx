@@ -3,7 +3,6 @@ import {Text, TouchableOpacity, View} from "react-native";
 import {useDispatch} from "react-redux";
 import {getTodosAsync} from "./redux/todoSlice";
 import {useAppSelector} from "./hooks";
-import TodoItems from './TodoItem';
 import TodoItem from './TodoItem';
 
 
@@ -57,7 +56,6 @@ const ToDoList = ({navigation, ...props}) => {
                             todoId: t.todoId,
                         })
                     }
-
                 >
                     <TodoItem
                         key={t.todoId}

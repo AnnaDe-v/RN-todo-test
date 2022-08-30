@@ -11,7 +11,6 @@ interface Props {
 }
 
 const TodoItem = ({id, text, deleteTodo}) => {
-
     const navigation =
         useNavigation();
 
