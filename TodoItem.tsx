@@ -1,25 +1,30 @@
 import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Switch} from "react-native";
 import {Feather} from '@expo/vector-icons';
+import React, {FC} from "react";
+import {useNavigation} from "@react-navigation/native";
 
+interface Props {
+    id: string
+    text: string
+    onPressNav: (text: string) => void
+    deleteTodo: (id) => void
+}
 
 const TodoItem = ({id, text, deleteTodo}) => {
 
+    const navigation =
+        useNavigation();
+
     return (
-        <TouchableHighlight
-            underlayColor='transparent'
-        >
-            <View
-                style={styles.item}
-            >
+           <View
+               style={styles.item}
+           >
+               <Text>{text}</Text>
+               <TouchableOpacity onPress={() => deleteTodo(id)}>
+                   <Feather name="trash" size={24} color="red"/>
+               </TouchableOpacity>
+           </View>
 
-                <Text style={styles.name}>{text}</Text>
-                <TouchableOpacity onPress={() => deleteTodo(id)}>
-                    <Feather name="trash" size={24} color="red"/>
-                </TouchableOpacity>
-
-
-            </View>
-        </TouchableHighlight>
 
     );
 };

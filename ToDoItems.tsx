@@ -21,7 +21,7 @@ const ToDoItems: React.FC = () => {
 
     const addNewTaskHandler = () => {
         if (text.trim().length) {
-            dispatch(addTaskAsync(text, todoId))
+            // dispatch(addTaskAsync(text, todoId))
         }
 
         setText('')

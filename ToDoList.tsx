@@ -1,18 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {Text, TouchableOpacity, View} from "react-native";
-import {addDoc, collection, doc, getDocs, query, setDoc} from "firebase/firestore";
-import {db} from "./firebase";
-import {v4 as uuidv4} from 'uuid';
 import {useDispatch} from "react-redux";
 import {getTodosAsync} from "./redux/todoSlice";
 import {useAppSelector} from "./hooks";
+import TodoItems from './TodoItem';
 import TodoItem from './TodoItem';
 
 
-const ToDoList = () => {
+const ToDoList = ({navigation, ...props}) => {
     const todoList = useAppSelector(state => state.todo.list)
     const dispatch = useDispatch()
-
 
     console.log(todoList)
 
@@ -48,8 +45,29 @@ const ToDoList = () => {
     return (
         <View>
             {
-                todoList.map(t => (
-                    <TodoItem text={t.todoTitle} id={t.todoId} deleteTodo={deleteTodo}/>
+                todoList.map((t, index) => (
+
+                <TouchableOpacity
+                    key={index}
+                    activeOpacity={1}
+                    style={{ marginBottom: 30 }}
+                    onPress={() =>
+                        navigation.navigate("TodoDetail", {
+                            todoTitle: t.todoTitle,
+                            todoId: t.todoId,
+                        })
+                    }
+
+                >
+                    <TodoItem
+                        key={t.todoId}
+                        text={t.todoTitle}
+                        id={t.todoId}
+                        deleteTodo={deleteTodo}
+                    />
+                </TouchableOpacity>
+
+
                 ))
             }
         </View>
