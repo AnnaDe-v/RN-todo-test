@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 
 
-const InputBlock = ({text, setText, addNewTodoHandler}) => {
+const InputBlock = ({text, setText, addNewTodoHandler, textPlaceholder}) => {
 
 
     return (
@@ -11,7 +11,7 @@ const InputBlock = ({text, setText, addNewTodoHandler}) => {
                 style={styles.input}
                 value={text}
                 onChangeText={text => setText(text)}
-                placeholder='What are you going to do?'
+                placeholder={textPlaceholder}
             />
             <TouchableOpacity
                 style={{

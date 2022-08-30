@@ -24,7 +24,7 @@ function HomeScreen ({navigation}) {
 
     return (
             <View style={{backgroundColor: '#a9eeb4', alignItems: 'center'}}>
-                <InputBlock addNewTodoHandler={addNewTodoHandler} setText={setText} text={text}/>
+                <InputBlock addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
                 <ToDoList navigation={navigation}/>
             </View>
     )
