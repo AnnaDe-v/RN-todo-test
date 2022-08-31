@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, ScrollView} from "react-native";
 import InputBlock from "./InputBlock";
 import TaskItems from "./TaskItems";
 import {useAppSelector} from "./hooks";
 import {useDispatch} from "react-redux";
 import TaskItem from './TaskItem';
+import {getTasksAsync} from "./redux/todoSlice";
 
 
 const TodoDetail = ({route, navigation}) => {
@@ -15,7 +16,9 @@ const TodoDetail = ({route, navigation}) => {
 
     const filteredTasks = tasks.filter(t => t.todoId === route.params.todoId)
 
-
+    useEffect(() => {
+        dispatch(getTasksAsync(route.params.todoId));
+    }, [dispatch]);
 
     return (
         <>
@@ -23,12 +26,13 @@ const TodoDetail = ({route, navigation}) => {
                 <Text style={{fontSize: 20}}>{route.params.todoTitle}</Text>
             </View>
             <InputBlock textPlaceholder='Type task...' />
-            <TaskItems todoId={route.params.todoId}/>
+            {/*<TaskItems todoId={route.params.todoId}/>*/}
             <ScrollView>
                 {
                     filteredTasks.map(t => (<View>
                         <Text>{t.todoId}</Text>
                         <Text>{t.todoTitle}</Text>
+
                         <View>{t.tasksList?.map(task => <TaskItem key={task.taskId} text={task.taskTitle} id={task.taskId}/>)}</View>
 
                     </View>))

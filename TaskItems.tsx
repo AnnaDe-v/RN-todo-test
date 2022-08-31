@@ -41,7 +41,7 @@ const TaskItems = ({todoId}) => {
         <View style={styles.container}>
             <ScrollView
                 contentContainerStyle={{
-                    paddingBottom: 300,
+                    paddingBottom: 20,
                 }}
             >
                 {!error && <View style={{alignItems: 'center'}}><Text
@@ -50,20 +50,20 @@ const TaskItems = ({todoId}) => {
                     !loading ?
                         (
 
-                            filteredTasks.map((todo) => {
-                               <Text>{todo.todoTitle}</Text>
-                                todo.tasksList?.map((task) => {
-                                    <TodoItem key={task.taskId} text={task.taskTitle} id={task.taskId} deleteTodo={deleteTodo}/>
-                                })
-                            })
+                            // filteredTasks.map((todo) => {
+                            //    <Text>{todo.todoTitle}</Text>
+                            //     todo.tasksList?.map((task) => {
+                            //         <TodoItem key={task.taskId} text={task.taskTitle} id={task.taskId} deleteTodo={deleteTodo}/>
+                            //     })
+                            // })
 
 
 
-                            // <TouchableOpacity>
-                            //     <View style={{alignItems: 'center'}}>
-                            //         <Text style={{fontSize: 18}}>WOW</Text>
-                            //     </View>
-                            // </TouchableOpacity>
+                            <TouchableOpacity>
+                                <View style={{alignItems: 'center'}}>
+                                    <Text style={{fontSize: 18}}>WOW</Text>
+                                </View>
+                            </TouchableOpacity>
 
                         ) : (
                             <View style={{alignItems: 'center'}}>
