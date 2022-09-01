@@ -1,16 +1,14 @@
-import { Button } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import ToDoList from './ToDoList';
-import {addTodoAsync, getTodosAsync} from "./redux/todoSlice";
+import {addTodoAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
-import InputBlock from "./InputBlock";
+import InputBlockTodo from "./InputBlockTodo";
 
 
 
 
 function HomeScreen ({navigation}) {
-
     const [text, setText] = useState('')
     const dispatch = useDispatch();
 
@@ -23,10 +21,10 @@ function HomeScreen ({navigation}) {
 
 
     return (
-            <View style={{backgroundColor: '#a9eeb4', alignItems: 'center'}}>
-                <InputBlock addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
-                <ToDoList navigation={navigation}/>
-            </View>
+        <View style={{backgroundColor: '#a9eeb4', alignItems: 'center', marginTop: 50}}>
+            <InputBlockTodo addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
+            <ToDoList navigation={navigation}/>
+        </View>
     )
 }
 

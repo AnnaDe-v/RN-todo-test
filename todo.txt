@@ -1,0 +1,9 @@
+[]- toggle task
+[]- delete task
+[]- render
+[]- styles
+[]- loading
+[]- sorting folders
+[] - error handled
+[]- split reducer(task & todo) ?
+

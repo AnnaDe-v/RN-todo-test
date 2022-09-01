@@ -1,7 +1,6 @@
-import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {collection, doc, getDocs, onSnapshot, query, setDoc} from 'firebase/firestore';
+import {AnyAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {addDoc, collection, deleteDoc, doc, getDocs, query, setDoc} from 'firebase/firestore';
 import {db} from "../firebase";
-import {v4 as uuidv4} from 'uuid';
 
 export type todoType = {
     todoTitle: string
@@ -47,7 +46,7 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
 
 export const getTasksAsync = createAsyncThunk<tasksListType[], undefined, { rejectValue: string }>(
     'todo/getTasksAsync',
-    async function (todoId: string, {rejectWithValue}) {
+    async function (todoId: string,  {rejectWithValue}) {
 
         const q = query(collection(db, `todos/${todoId}/tasksList`));
         const querySnapshot = await getDocs(q);
@@ -82,30 +81,19 @@ export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: st
     }
 );
 
-export const addTaskAsync = createAsyncThunk<todoType, string, { rejectValue: string }>(
+export const addTaskAsync = createAsyncThunk<todoType, string>(
     'todo/addTaskAsync',
-    async function (text, localTodoId, {rejectWithValue, dispatch}) {
+    async function ({text, routeTodoId}) {
 
-        const q = query(collection(db, "todos"));
-        const querySnapshot = await getDocs(q);
-        const queryData = querySnapshot.docs.map((t) => ({
-            ...t.data(),
-            id: t.id,
-        }));
-        console.log(queryData);
-
-        queryData.map(async (v) => {
-            await setDoc(doc(db, `todos/${localTodoId}/tasksList/${uuidv4()}`),
-                {
-                    taskId: Date.now().toLocaleString(),
-                    taskTitle: 'New task',
-                    IsCompleted: false,
-                }
-            );
-        })
-
+        const todoRef = await doc(db, "todos", routeTodoId);
+        const colRef = collection(todoRef, "tasksList")
+        await addDoc(colRef, {
+            taskId: Date.now().toLocaleString(),
+            taskTitle: text,
+            IsCompleted: false,
+        });
     }
-);
+)
 
 
 //
@@ -133,21 +121,19 @@ export const addTaskAsync = createAsyncThunk<todoType, string, { rejectValue: st
 //
 //     }
 // );
-//
-//
-// export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: string }>(
-//     'todo/deleteTodoAsync',
-//     async function (id, {rejectWithValue}) {
-//         const resp = await fetch(`https://630a5a4a324991003284bd51.mockapi.io/todolist/${id}`, {
-//             method: 'DELETE',
-//         });
-//         if (!resp.ok) {
-//             return rejectWithValue('Server Error!');
-//         }
-//
-//         return id
-//     }
-// );
+
+
+export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: string }>(
+    'todo/deleteTodoAsync',
+    async function (postId, {rejectWithValue}) {
+
+        const resp = await deleteDoc(doc(db, `todos`, postId));
+
+        return postId
+
+
+    }
+);
 
 const initialState: TodosState = {
     list: [
@@ -208,28 +194,37 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(getTasksAsync.fulfilled, (state, action) => {
-                state.list = state.list.map(t => t.todoId === action.payload[0].parentTodo ? {...t, tasksList: [...action.payload]} : t)
+                state.list = state.list.map(t => t.todoId === action.payload[0].parentTodo ? {
+                    ...t,
+                    tasksList: [...action.payload]
+                } : t)
                 state.loading = false
             })
-        .addCase(addTodoAsync.pending, (state) => {
-            state.error = null
-        })
-        .addCase(addTodoAsync.fulfilled, (state, action) => {
-            state.list.push(action.payload)
-        })
-        // .addCase(toggleCompleteAsync.pending, (state) => {
-        //     state.error = null
-        // })
-        // .addCase(toggleCompleteAsync.fulfilled, (state, action) => {
-        //     const toggledTodo = state.list.find((todo) => todo.id === action.payload.id);
-        //     toggledTodo.IsCompleted = !toggledTodo.IsCompleted;
-        // })
-        // .addCase(deleteTodoAsync.pending, (state) => {
-        //     state.error = null
-        // })
-        // .addCase(deleteTodoAsync.fulfilled, (state, action) => {
-        //     state.list = state.list.filter((todo) => todo.id !== action.payload);
-        // })
+            .addCase(addTodoAsync.pending, (state) => {
+                state.error = null
+            })
+            .addCase(addTodoAsync.fulfilled, (state, action) => {
+                state.list.push(action.payload)
+            })
+            .addCase(addTaskAsync.pending, (state) => {
+                state.error = null
+            })
+            .addCase(addTaskAsync.fulfilled, (state, action) => {
+                state.list.map(t => t.todoId === action.payload.parentTodo ? t.tasksList = action.payload.tasksList : t)
+            })
+            // .addCase(toggleCompleteAsync.pending, (state) => {
+            //     state.error = null
+            // })
+            // .addCase(toggleCompleteAsync.fulfilled, (state, action) => {
+            //     const toggledTodo = state.list.find((todo) => todo.id === action.payload.id);
+            //     toggledTodo.IsCompleted = !toggledTodo.IsCompleted;
+            // })
+            .addCase(deleteTodoAsync.pending, (state) => {
+                state.error = null
+            })
+            .addCase(deleteTodoAsync.fulfilled, (state, action) => {
+                state.list = state.list.filter((todo) => todo.todoId !== action.payload);
+            })
         // .addMatcher(Error, (state, action: PayloadAction<string>) => {
         //     state.error = action.payload;
         //     state.loading = false;

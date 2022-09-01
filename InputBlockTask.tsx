@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 
 
-const InputBlock = ({text, setText, addNewTodoHandler, textPlaceholder}) => {
+const InputBlockTask = ({text, setText, addNewTaskHandler, textPlaceholder}) => {
 
 
     return (
@@ -21,14 +21,14 @@ const InputBlock = ({text, setText, addNewTodoHandler, textPlaceholder}) => {
                     height: 40,
                     borderRadius: 10,
                 }}
-                onPress={() => addNewTodoHandler(text)}>
+                onPress={() => addNewTaskHandler(text)}>
                 <Text style={{color: 'white', fontSize: 18}}>Add</Text>
             </TouchableOpacity>
         </View>
     );
 };
 
-export default InputBlock;
+export default InputBlockTask;
 
 
 const styles = StyleSheet.create({

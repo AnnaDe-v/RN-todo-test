@@ -25,13 +25,6 @@ const TaskItems = ({todoId}) => {
     }, [dispatch]);
 
 
-    // const addNewTaskHandler = () => {
-    //     if (text.trim().length) {
-    //         dispatch(addTaskAsync('addNewTaskHandler', todoId))
-    //     }
-    //     setText('')
-    // }
-
 
     const deleteTodo = id => {
         dispatch(deleteTodoAsync(id))

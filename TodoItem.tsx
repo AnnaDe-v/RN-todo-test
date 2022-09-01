@@ -15,14 +15,14 @@ const TodoItem = ({id, text, deleteTodo}) => {
         useNavigation();
 
     return (
-           <View
-               style={styles.item}
-           >
-               <Text>{text}</Text>
-               <TouchableOpacity onPress={() => deleteTodo(id)}>
-                   <Feather name="trash" size={24} color="red"/>
-               </TouchableOpacity>
-           </View>
+        <View
+            style={styles.item}
+        >
+            <Text>{text}</Text>
+            <TouchableOpacity onPress={() => deleteTodo(id)}>
+                <Feather name="trash" size={24} color="red"/>
+            </TouchableOpacity>
+        </View>
 
 
     );
