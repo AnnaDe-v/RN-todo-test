@@ -1,6 +1,7 @@
 import {AnyAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {addDoc, collection, deleteDoc, doc, getDocs, query, setDoc} from 'firebase/firestore';
 import {db} from "../firebase";
+import { v4 as uuidv4 } from 'uuid';
 
 export type todoType = {
     todoTitle: string
@@ -76,7 +77,8 @@ export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: st
         }
         const queryData = await setDoc(newTodo, dataForTodo);
 
-        return queryData
+        console.log('queryDataAddTodo', dataForTodo)
+
 
     }
 );
@@ -85,13 +87,64 @@ export const addTaskAsync = createAsyncThunk<todoType, string>(
     'todo/addTaskAsync',
     async function ({text, routeTodoId}) {
 
+
+
         const todoRef = await doc(db, "todos", routeTodoId);
+
         const colRef = collection(todoRef, "tasksList")
-        await addDoc(colRef, {
-            taskId: Date.now().toLocaleString(),
+
+////////////////////////////////
+
+        const newTask = doc(collection(db, `todos/${routeTodoId}/tasksList`))
+
+
+        console.log('newTask', newTask.id)
+
+
+
+
+        const dataForTask = {
             taskTitle: text,
-            IsCompleted: false,
-        });
+            taskId: newTask.id,
+            IsCompleted: false
+        }
+
+        const queryData = await setDoc(newTask, dataForTask);
+
+        console.log('queryData', queryData)
+
+        return queryData
+
+
+        // const querySnapshot = await getDocs(colRef);
+        // const queryData = querySnapshot.docs.map((tasks) => ({
+        //     taskId: tasks.id
+        // }));
+        //
+        // queryData.map(async (task) => {
+        //     await addDoc(colRef, {
+        //         queryData,
+        //         taskTitle: text,
+        //         IsCompleted: false,
+        //     });
+        // })
+        //
+        //
+        // console.log('queryData:', queryData)
+
+
+
+        /////////////////////////////////////////
+
+
+
+        // const res = await addDoc(colRef, {
+        //     taskId: uuidv4(),
+        //     taskTitle: text,
+        //     IsCompleted: false,
+        // });
+
+
     }
 )
 
@@ -125,15 +178,26 @@ export const addTaskAsync = createAsyncThunk<todoType, string>(
 
 export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: string }>(
     'todo/deleteTodoAsync',
-    async function (postId, {rejectWithValue}) {
+    async function (todoId, {rejectWithValue}) {
 
-        const resp = await deleteDoc(doc(db, `todos`, postId));
-
-        return postId
-
-
+        const resp = await deleteDoc(doc(db, `todos`, todoId));
+        return todoId
     }
 );
+
+export const deleteTaskAsync = createAsyncThunk<string, string, { rejectValue: string }>(
+    'todo/deleteTaskAsync',
+    async function ({routeTodoId, taskId}) {
+
+        console.log('routeTodoId:', routeTodoId)
+        console.log('taskId:', taskId)
+
+        const resp = await deleteDoc(doc(db, `todos/${routeTodoId}/tasksList/${taskId}`));
+        return {routeTodoId, taskId}
+    }
+);
+
+
 
 const initialState: TodosState = {
     list: [
@@ -210,7 +274,8 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(addTaskAsync.fulfilled, (state, action) => {
-                state.list.map(t => t.todoId === action.payload.parentTodo ? t.tasksList = action.payload.tasksList : t)
+                state.list = state.list.map(t => t.todoId === action.payload.parentTodo ? t.tasksList.push(action.payload.tasksList) : t)
+
             })
             // .addCase(toggleCompleteAsync.pending, (state) => {
             //     state.error = null
@@ -225,6 +290,14 @@ export const todoSlice = createSlice({
             .addCase(deleteTodoAsync.fulfilled, (state, action) => {
                 state.list = state.list.filter((todo) => todo.todoId !== action.payload);
             })
+            .addCase(deleteTaskAsync.pending, (state) => {
+                state.error = null
+            })
+            .addCase(deleteTaskAsync.fulfilled, (state, action) => {
+                state.list = state.list.filter((todo) => todo.todoId === action.payload.routeTodoId && todo.tasksList !== action.payload.taskId);
+            })
+
+
         // .addMatcher(Error, (state, action: PayloadAction<string>) => {
         //     state.error = action.payload;
         //     state.loading = false;

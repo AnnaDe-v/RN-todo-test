@@ -6,7 +6,6 @@ import {useNavigation} from "@react-navigation/native";
 interface Props {
     id: string
     text: string
-    onPressNav: (text: string) => void
     deleteTodo: (id) => void
 }
 

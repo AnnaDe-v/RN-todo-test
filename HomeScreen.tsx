@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import ToDoList from './ToDoList';
-import {addTodoAsync} from "./redux/todoSlice";
+import {addTodoAsync, getTodosAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
 import InputBlockTodo from "./InputBlockTodo";
 
@@ -11,6 +11,13 @@ import InputBlockTodo from "./InputBlockTodo";
 function HomeScreen ({navigation}) {
     const [text, setText] = useState('')
     const dispatch = useDispatch();
+
+
+
+    useEffect(() => {
+        dispatch(getTodosAsync());
+    }, [dispatch]);
+
 
     const addNewTodoHandler = () => {
         if (text.trim().length) {

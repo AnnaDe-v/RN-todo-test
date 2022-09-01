@@ -5,7 +5,6 @@ import {useAppSelector} from "./hooks";
 import {useDispatch} from "react-redux";
 import TaskItem from './TaskItem';
 import {addTaskAsync, getTasksAsync} from "./redux/todoSlice";
-import TaskItems from "./TaskItems";
 
 
 const TodoDetail = ({route, navigation}) => {
@@ -17,19 +16,21 @@ const TodoDetail = ({route, navigation}) => {
     const filteredTasks = tasks.filter(t => t.todoId === route.params.todoId)
 
     const routeTodoId = route.params.todoId
+
     console.log('routeTodoId', routeTodoId)
 
     useEffect(() => {
-        dispatch(getTasksAsync(route.params.todoId));
+        dispatch(getTasksAsync(routeTodoId));
     }, [dispatch]);
 
 
     const addNewTaskHandler = () => {
         if (text.trim().length) {
-            dispatch(addTaskAsync({text, routeTodoId}))
+            dispatch(addTaskAsync({text, routeTodoId }))
         }
         setText('')
     }
+
 
     return (
         <>
@@ -45,9 +46,14 @@ const TodoDetail = ({route, navigation}) => {
                         <Text>{t.todoId}</Text>
                         <Text>{t.todoTitle}</Text>
 
-                        <View>{t.tasksList?.map(task => <TaskItem key={task.taskId}
-                                                                  text={task.taskTitle}
-                                                                  id={task.taskId}/>)}
+                        <View>{t.tasksList?.map(task => <TaskItem
+                            key={task.taskId}
+                            text={task.taskTitle}
+                            taskId={task.taskId}
+                            routeTodoId={routeTodoId}
+                        />)}
+
+
                         </View>
                     </View>))
                 }

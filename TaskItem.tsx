@@ -1,16 +1,21 @@
 import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Switch} from "react-native";
 import {Feather} from '@expo/vector-icons';
-import {toggleCompleteAsync} from "./redux/todoSlice";
+import {deleteTaskAsync, toggleCompleteAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
 
 
-const TaskItem = ({id, text, IsCompleted, deleteTodo}) => {
+const TaskItem = ({taskId, text, IsCompleted, routeTodoId}) => {
     const dispatch = useDispatch()
 
 
+
     const handleCheckboxClick = () => {
-        dispatch(toggleCompleteAsync(id));
+        dispatch(toggleCompleteAsync(taskId));
     };
+
+    const deleteTask = (taskId) => {
+        dispatch(deleteTaskAsync({routeTodoId, taskId}))
+    }
 
 
     return (
@@ -33,7 +38,7 @@ const TaskItem = ({id, text, IsCompleted, deleteTodo}) => {
                     />
                 </View>
                 <Text style={styles.name}>{text}</Text>
-                <TouchableOpacity onPress={() => deleteTodo(id)}>
+                <TouchableOpacity onPress={deleteTask}>
                     <Feather name="trash" size={24} color="red"/>
                 </TouchableOpacity>
             </View>

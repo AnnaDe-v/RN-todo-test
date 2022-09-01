@@ -11,9 +11,7 @@ const ToDoList = ({navigation, ...props}) => {
     const dispatch = useDispatch()
 
 
-    useEffect(() => {
-        dispatch(getTodosAsync());
-    }, [dispatch]);
+
 
 
     const deleteTodo = (id) => {
