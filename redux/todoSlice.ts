@@ -31,14 +31,11 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
     'todo/getTodosAsync',
     async function (_, {rejectWithValue}) {
 
-
         const q = query(collection(db, "todos"));
         const querySnapshot = await getDocs(q);
         const queryData = querySnapshot.docs.map((t) => ({
             ...t.data()
         }));
-        console.log('getToDo', queryData);
-
 
         return queryData
     }
@@ -61,7 +58,6 @@ export const getTasksAsync = createAsyncThunk<tasksListType[], undefined, { reje
         console.log('getTasks:', queryData);
 
         return queryData
-
     }
 );
 
@@ -77,17 +73,13 @@ export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: st
         }
         const queryData = await setDoc(newTodo, dataForTodo);
 
-        console.log('queryDataAddTodo', dataForTodo)
-
-
+        return dataForTodo
     }
 );
 
 export const addTaskAsync = createAsyncThunk<todoType, string>(
     'todo/addTaskAsync',
     async function ({text, routeTodoId}) {
-
-
 
         const todoRef = await doc(db, "todos", routeTodoId);
 
@@ -112,8 +104,9 @@ export const addTaskAsync = createAsyncThunk<todoType, string>(
         const queryData = await setDoc(newTask, dataForTask);
 
         console.log('queryData', queryData)
+        console.log('dataForTask', dataForTask)
 
-        return queryData
+        return dataForTask
 
 
         // const querySnapshot = await getDocs(colRef);
@@ -268,13 +261,14 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(addTodoAsync.fulfilled, (state, action) => {
+                console.log(action.payload)
                 state.list.push(action.payload)
             })
             .addCase(addTaskAsync.pending, (state) => {
                 state.error = null
             })
             .addCase(addTaskAsync.fulfilled, (state, action) => {
-                state.list = state.list.map(t => t.todoId === action.payload.parentTodo ? t.tasksList.push(action.payload.tasksList) : t)
+                state.list.map(t => t.todoId === action.payload.parentTodo ? t.tasksList.push(action.payload.tasksList) : t)
 
             })
             // .addCase(toggleCompleteAsync.pending, (state) => {
@@ -296,8 +290,6 @@ export const todoSlice = createSlice({
             .addCase(deleteTaskAsync.fulfilled, (state, action) => {
                 state.list = state.list.filter((todo) => todo.todoId === action.payload.routeTodoId && todo.tasksList !== action.payload.taskId);
             })
-
-
         // .addMatcher(Error, (state, action: PayloadAction<string>) => {
         //     state.error = action.payload;
         //     state.loading = false;

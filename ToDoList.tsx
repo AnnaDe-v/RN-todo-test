@@ -12,11 +12,11 @@ const ToDoList = ({navigation, ...props}) => {
 
 
 
-
-
     const deleteTodo = (id) => {
         dispatch(deleteTodoAsync(id))
     }
+
+
 
 
     return (
@@ -40,6 +40,7 @@ const ToDoList = ({navigation, ...props}) => {
                             text={t.todoTitle}
                             id={t.todoId}
                             deleteTodo={deleteTodo}
+
                         />
                     </TouchableOpacity>
 
