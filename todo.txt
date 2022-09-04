@@ -1,9 +1,7 @@
-[]- toggle task
-[]- delete task
-[]- render
+[x]- toggle task
+[x]- delete task
+[x]- render
 []- styles
 []- loading
 []- sorting folders
 [] - error handled
-[]- split reducer(task & todo) ?
-

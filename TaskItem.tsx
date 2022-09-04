@@ -4,11 +4,13 @@ import {deleteTaskAsync, toggleCompleteAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
 
 
+
 const TaskItem = ({taskId, text, IsCompleted, routeTodoId}) => {
     const dispatch = useDispatch()
 
-    const handleCheckboxClick = () => {
-        dispatch(toggleCompleteAsync(routeTodoId));
+
+    const handleCheckboxClick = async () => {
+        dispatch(toggleCompleteAsync({routeTodoId, taskId, IsCompleted}));
     };
 
     const deleteTask = () => {

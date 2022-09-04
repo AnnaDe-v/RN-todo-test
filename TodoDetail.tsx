@@ -12,11 +12,7 @@ const TodoDetail = ({route, navigation}) => {
     const tasks = useAppSelector((state) => state.todo.list);
     const {loading, error} = useAppSelector((state) => state.todo);
     const [text, setText] = useState('')
-
     const routeTodoId = route.params.todoId
-
-
-    console.log('tasks', tasks)
 
     const filteredTasks = tasks.filter(t => t.todoId === routeTodoId)
 

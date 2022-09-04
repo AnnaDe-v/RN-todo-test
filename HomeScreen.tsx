@@ -4,8 +4,6 @@ import ToDoList from './ToDoList';
 import {addTodoAsync, getTodosAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
 import InputBlockTodo from "./InputBlockTodo";
-import About from "./About";
-
 
 
 

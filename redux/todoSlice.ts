@@ -1,7 +1,6 @@
 import {AnyAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {addDoc, collection, deleteDoc, doc, getDocs, query, setDoc} from 'firebase/firestore';
+import {addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc} from 'firebase/firestore';
 import {db} from "../firebase";
-import { v4 as uuidv4 } from 'uuid';
 
 export type todoType = {
     todoTitle: string
@@ -44,7 +43,7 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
 
 export const getTasksAsync = createAsyncThunk<tasksListType[], undefined, { rejectValue: string }>(
     'todo/getTasksAsync',
-    async function (todoId: string,  {rejectWithValue}) {
+    async function (todoId: string, {rejectWithValue}) {
 
         const q = query(collection(db, `todos/${todoId}/tasksList`));
         const querySnapshot = await getDocs(q);
@@ -53,8 +52,6 @@ export const getTasksAsync = createAsyncThunk<tasksListType[], undefined, { reje
                 ...t.data()
             }
         ));
-
-        console.log('queryDataGetTasks', queryData)
 
         return {queryData, todoId}
     }
@@ -95,17 +92,18 @@ export const addTaskAsync = createAsyncThunk<todoType, string>(
         const queryData = await setDoc(newTask, dataForTask);
 
         return {dataForTask, routeTodoId}
-
-
     }
 )
 
 
 export const toggleCompleteAsync = createAsyncThunk<todoType, string, { rejectValue: string, state: { todo: TodosState } }>(
     'todo/completeTodoAsync',
-    async function ({routeTodoId, taskId}, {rejectWithValue, dispatch, getState}) {
-        const todo = getState().todo.list.find(todo => todo.todoId === routeTodoId)
-        const task = todo.tasksList.find(task => task.taskId === taskId)
+    async function ({routeTodoId, taskId, IsCompleted}, {rejectWithValue, dispatch, getState}) {
+        const refTask = doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`)
+        await updateDoc(refTask, {
+            'IsCompleted': IsCompleted
+        });
+        return {routeTodoId, taskId, IsCompleted}
     }
 );
 
@@ -123,7 +121,6 @@ export const deleteTaskAsync = createAsyncThunk<string, string, { rejectValue: s
     'todo/deleteTaskAsync',
     async function ({routeTodoId, taskId}) {
 
-
         const resp = await deleteDoc(doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`));
 
         return {routeTodoId, taskId}
@@ -131,26 +128,24 @@ export const deleteTaskAsync = createAsyncThunk<string, string, { rejectValue: s
 );
 
 
-
 const initialState: TodosState = {
     list: [
         // {
         //     todoTitle: 'Tools store',
-        //     todoId: '15',
+        //     todoId: '58958u5494',
         //     tasksList: [
         //         {
-        //             taskId: '221',
+        //             taskId: '1',
         //             taskTitle: 'Hammer',
         //             IsCompleted: false,
         //         },
         //         {
-        //             taskId: 'se',
-        //             taskTitle: 'WD',
+        //             taskId: '2',
+        //             taskTitle: 'WD-40',
         //             IsCompleted: false,
         //         }
         //     ]
         // },
-
     ],
     loading: false,
     error: null
@@ -167,8 +162,6 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(getTodosAsync.fulfilled, (state, action) => {
-                // state.list = action.payload
-
                 state.list.unshift(...action.payload)
                 state.loading = false
             })
@@ -183,7 +176,6 @@ export const todoSlice = createSlice({
                     ...t,
                     tasksList: [...action.payload.queryData]
                 } : t)
-                // state.list = state.list.map(t => t.todoId === action.payload.todoId ? t.tasksList?.push(action.payload.queryData) : t)
                 state.loading = false
             })
             .addCase(addTodoAsync.pending, (state) => {
@@ -202,9 +194,9 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(toggleCompleteAsync.fulfilled, (state, action) => {
-
-                // const toggledTodo = state.list.find((todo) => todo.id === action.payload.id);
-                // toggledTodo.IsCompleted = !toggledTodo.IsCompleted;
+                const todo = state.list.find(todo => todo.todoId === action.payload.routeTodoId)
+                const task = todo.tasksList.find(task => task.taskId === action.payload.taskId)
+                task.IsCompleted = !action.payload.IsCompleted
             })
             .addCase(deleteTodoAsync.pending, (state) => {
                 state.error = null
@@ -223,9 +215,6 @@ export const todoSlice = createSlice({
                 if (index > -1) {
                     tasksDelete.splice(index, 1)
                 }
-
-                // state.list = state.list.map(todo => todo.todoId === action.payload.routeTodoId ? todo.tasksList = action.payload.queryData : todo)
-
             })
         // .addMatcher(Error, (state, action: PayloadAction<string>) => {
         //     state.error = action.payload;
