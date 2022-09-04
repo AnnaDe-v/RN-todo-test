@@ -35,14 +35,14 @@ const styles = StyleSheet.create({
     actions: {
         padding: 20,
         justifyContent: "center",
+        width: '100%',
 
     },
     input: {
         borderRadius: 20,
-        width: '70%',
         fontSize: 20,
         marginVertical: 25,
-        marginHorizontal: '15%'
+        textAlign: "center"
     },
 
 });

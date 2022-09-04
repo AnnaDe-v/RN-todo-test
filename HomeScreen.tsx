@@ -27,7 +27,7 @@ function HomeScreen ({navigation}) {
 
 
     return (
-        <View style={{backgroundColor: '#eee', alignItems: 'center', marginTop: 50}}>
+        <View style={styles.todoContainer}>
             <InputBlockTodo addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
             <ToDoList navigation={navigation} text={text} />
         </View>
@@ -35,9 +35,10 @@ function HomeScreen ({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
-        backgroundColor: "#e57474",
-        paddingTop: 10
+    todoContainer: {
+        backgroundColor: '#eee',
+        alignItems: 'center',
+        marginTop: 50,
     },
 });
 

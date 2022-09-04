@@ -25,7 +25,11 @@ const ToDoList = ({navigation, ...props}) => {
                     <TouchableOpacity
                         key={index}
                         activeOpacity={1}
-                        style={{ marginBottom: 30 }}
+                        style={{ marginBottom: 10,
+                                borderRadius: 10,
+                                alignItems: 'center',
+                                flexDirection: 'row',
+                            }}
                         onPress={() =>
                             navigation.navigate("TodoDetail", {
                                 todoTitle: t.todoTitle,

@@ -35,6 +35,7 @@ const TaskItem = ({taskId, text, IsCompleted, routeTodoId}) => {
                         thumbColor={IsCompleted ? "#f5dd4b" : "#f4f3f4"}
                         onValueChange={handleCheckboxClick}
                         value={IsCompleted}
+                        style={{position: 'absolute', left: 5, paddingTop: 20, paddingBottom: 10}}
                     />
                 </View>
                 <Text style={styles.name}>{text}</Text>
@@ -60,9 +61,10 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 18,
-        marginLeft: 5,
-        flex: 1,
         flexWrap: 'wrap',
+        width: '75%',
+        alignItems: 'center',
+        textAlign: "center",
     }
 })
 

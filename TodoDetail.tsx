@@ -35,8 +35,12 @@ const TodoDetail = ({route, navigation}) => {
             <View style={{paddingTop: 50, alignItems: 'center'}}>
                 <Text style={{fontSize: 20}}>{route.params.todoTitle}</Text>
             </View>
-            <InputBlockTask textPlaceholder='Type task...' addNewTaskHandler={addNewTaskHandler} text={text}
-                            setText={setText}/>
+            <InputBlockTask
+                            textPlaceholder='Type task...'
+                            addNewTaskHandler={addNewTaskHandler}
+                            text={text}
+                            setText={setText}
+            />
             <ScrollView>
                 {
                     filteredTasks.map((t, index) => (

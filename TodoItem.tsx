@@ -17,7 +17,7 @@ const TodoItem = ({id, text, deleteTodo}) => {
         <View
             style={styles.item}
         >
-            <Text>{text}</Text>
+            <Text style={styles.name}>{text}</Text>
             <TouchableOpacity onPress={() => deleteTodo(id)}>
                 <Feather name="trash" size={24} color="red"/>
             </TouchableOpacity>
@@ -29,7 +29,7 @@ const TodoItem = ({id, text, deleteTodo}) => {
 
 const styles = StyleSheet.create({
     item: {
-        backgroundColor: '#eee1f5',
+        backgroundColor: '#93bff3',
         borderRadius: 10,
         width: '90%',
         alignItems: 'center',
