@@ -4,6 +4,7 @@ import ToDoList from './ToDoList';
 import {addTodoAsync, getTodosAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
 import InputBlockTodo from "./InputBlockTodo";
+import About from "./About";
 
 
 
@@ -32,6 +33,7 @@ function HomeScreen ({navigation}) {
         <View style={{backgroundColor: '#a9eeb4', alignItems: 'center', marginTop: 50}}>
             <InputBlockTodo addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
             <ToDoList navigation={navigation} text={text} />
+            <About/>
         </View>
     )
 }

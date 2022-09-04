@@ -10,14 +10,12 @@ const ToDoList = ({navigation, ...props}) => {
     const todoList = useAppSelector(state => state.todo.list)
     const dispatch = useDispatch()
 
+    console.log('todoListW', todoList)
 
 
     const deleteTodo = (id) => {
         dispatch(deleteTodoAsync(id))
     }
-
-
-
 
     return (
         <View>
@@ -25,7 +23,7 @@ const ToDoList = ({navigation, ...props}) => {
                 todoList.map((t, index) => (
 
                     <TouchableOpacity
-                        key={index}
+                        key={t.todoId}
                         activeOpacity={1}
                         style={{ marginBottom: 30 }}
                         onPress={() =>
@@ -40,7 +38,6 @@ const ToDoList = ({navigation, ...props}) => {
                             text={t.todoTitle}
                             id={t.todoId}
                             deleteTodo={deleteTodo}
-
                         />
                     </TouchableOpacity>
 

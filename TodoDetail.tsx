@@ -13,11 +13,11 @@ const TodoDetail = ({route, navigation}) => {
     const {loading, error} = useAppSelector((state) => state.todo);
     const [text, setText] = useState('')
 
-    const filteredTasks = tasks.filter(t => t.todoId === route.params.todoId)
-
     const routeTodoId = route.params.todoId
 
-    console.log('routeTodoId', routeTodoId)
+
+    console.log('tasks',tasks)
+
 
     useEffect(() => {
         dispatch(getTasksAsync(routeTodoId));
@@ -39,22 +39,16 @@ const TodoDetail = ({route, navigation}) => {
             </View>
             <InputBlockTask textPlaceholder='Type task...' addNewTaskHandler={addNewTaskHandler} text={text}
                             setText={setText}/>
-            {/*<TaskItems todoId={route.params.todoId}/>*/}
             <ScrollView>
                 {
-                    filteredTasks.map(t => (<View>
-                        <Text>{t.todoId}</Text>
-                        <Text>{t.todoTitle}</Text>
-
-                        <View>{t.tasksList?.map(task => <TaskItem
+                    tasks.map(t => (<View>
+                        {t.tasksList?.map(task => <TaskItem
                             key={task.taskId}
                             text={task.taskTitle}
                             taskId={task.taskId}
+                            IsCompleted={task.IsCompleted}
                             routeTodoId={routeTodoId}
                         />)}
-
-
-                        </View>
                     </View>))
                 }
             </ScrollView>

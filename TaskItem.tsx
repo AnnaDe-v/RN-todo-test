@@ -10,10 +10,10 @@ const TaskItem = ({taskId, text, IsCompleted, routeTodoId}) => {
 
 
     const handleCheckboxClick = () => {
-        dispatch(toggleCompleteAsync(taskId));
+        dispatch(toggleCompleteAsync(routeTodoId));
     };
 
-    const deleteTask = (taskId) => {
+    const deleteTask = () => {
         dispatch(deleteTaskAsync({routeTodoId, taskId}))
     }
 
