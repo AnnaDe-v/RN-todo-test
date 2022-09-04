@@ -15,7 +15,6 @@ function HomeScreen ({navigation}) {
 
 
 
-
     useEffect(() => {
         dispatch(getTodosAsync());
     }, [dispatch]);
@@ -30,10 +29,9 @@ function HomeScreen ({navigation}) {
 
 
     return (
-        <View style={{backgroundColor: '#a9eeb4', alignItems: 'center', marginTop: 50}}>
+        <View style={{backgroundColor: '#eee', alignItems: 'center', marginTop: 50}}>
             <InputBlockTodo addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
             <ToDoList navigation={navigation} text={text} />
-            <About/>
         </View>
     )
 }

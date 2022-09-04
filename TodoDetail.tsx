@@ -16,7 +16,9 @@ const TodoDetail = ({route, navigation}) => {
     const routeTodoId = route.params.todoId
 
 
-    console.log('tasks',tasks)
+    console.log('tasks', tasks)
+
+    const filteredTasks = tasks.filter(t => t.todoId === routeTodoId)
 
 
     useEffect(() => {
@@ -26,7 +28,7 @@ const TodoDetail = ({route, navigation}) => {
 
     const addNewTaskHandler = () => {
         if (text.trim().length) {
-            dispatch(addTaskAsync({text, routeTodoId }))
+            dispatch(addTaskAsync({text, routeTodoId}))
         }
         setText('')
     }
@@ -41,19 +43,20 @@ const TodoDetail = ({route, navigation}) => {
                             setText={setText}/>
             <ScrollView>
                 {
-                    tasks.map(t => (<View>
-                        {t.tasksList?.map(task => <TaskItem
-                            key={task.taskId}
-                            text={task.taskTitle}
-                            taskId={task.taskId}
-                            IsCompleted={task.IsCompleted}
-                            routeTodoId={routeTodoId}
-                        />)}
-                    </View>))
+                    filteredTasks.map((t, index) => (
+                        <View key={index}>
+                        {t.tasksList?.map(task =>
+                            <TaskItem
+                                key={task.taskId}
+                                text={task.taskTitle}
+                                taskId={task.taskId}
+                                IsCompleted={task.IsCompleted}
+                                routeTodoId={routeTodoId}
+                            />)}
+                    </View>
+                    ))
                 }
             </ScrollView>
-
-
         </>
 
     );

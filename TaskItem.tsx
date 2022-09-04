@@ -7,8 +7,6 @@ import {useDispatch} from "react-redux";
 const TaskItem = ({taskId, text, IsCompleted, routeTodoId}) => {
     const dispatch = useDispatch()
 
-
-
     const handleCheckboxClick = () => {
         dispatch(toggleCompleteAsync(routeTodoId));
     };

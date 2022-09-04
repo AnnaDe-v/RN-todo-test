@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Text, TouchableOpacity, View} from "react-native";
+import {ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {useDispatch} from "react-redux";
 import {deleteTodoAsync, getTodosAsync} from "./redux/todoSlice";
 import {useAppSelector} from "./hooks";
@@ -18,12 +18,12 @@ const ToDoList = ({navigation, ...props}) => {
     }
 
     return (
-        <View>
+        <ScrollView>
             {
                 todoList.map((t, index) => (
 
                     <TouchableOpacity
-                        key={t.todoId}
+                        key={index}
                         activeOpacity={1}
                         style={{ marginBottom: 30 }}
                         onPress={() =>
@@ -34,7 +34,7 @@ const ToDoList = ({navigation, ...props}) => {
                         }
                     >
                         <TodoItem
-                            key={t.todoId}
+                            key={index}
                             text={t.todoTitle}
                             id={t.todoId}
                             deleteTodo={deleteTodo}
@@ -44,7 +44,7 @@ const ToDoList = ({navigation, ...props}) => {
 
                 ))
             }
-        </View>
+        </ScrollView>
     );
 };
 
