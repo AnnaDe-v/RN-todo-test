@@ -101,7 +101,7 @@ export const toggleCompleteAsync = createAsyncThunk<todoType, string, { rejectVa
     async function ({routeTodoId, taskId, IsCompleted}, {rejectWithValue, dispatch, getState}) {
         const refTask = doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`)
         await updateDoc(refTask, {
-            'IsCompleted': IsCompleted
+            'IsCompleted': !IsCompleted
         });
         return {routeTodoId, taskId, IsCompleted}
     }
