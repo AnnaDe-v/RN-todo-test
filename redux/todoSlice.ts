@@ -1,5 +1,5 @@
-import {AnyAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc} from 'firebase/firestore';
+import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc} from 'firebase/firestore';
 import {db} from "../firebase";
 
 export type todoType = {
@@ -21,9 +21,6 @@ type TodosState = {
     error: string | null
 }
 
-function Error(action: AnyAction) {
-    return action.type.endsWith('rejected');
-}
 
 
 export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectValue: string }>(
@@ -32,11 +29,15 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
 
         const q = query(collection(db, "todos"));
         const querySnapshot = await getDocs(q);
-        const queryData = querySnapshot.docs.map((t) => ({
-            ...t.data()
-        }));
 
-        return queryData
+        if (querySnapshot.empty) {
+            return rejectWithValue('No connection to the server')
+
+        } else {
+            return querySnapshot.docs.map((t) => ({
+                ...t.data()
+            }))
+        }
     }
 );
 
@@ -162,7 +163,9 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(getTodosAsync.fulfilled, (state, action) => {
-                state.list.unshift(...action.payload)
+                if(state.list !== action.payload) {
+                    state.list.unshift(...action.payload)
+                }
                 state.loading = false
             })
             .addCase(getTasksAsync.pending, (state) => {
@@ -170,7 +173,6 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(getTasksAsync.fulfilled, (state, action) => {
-                debugger
                 state.list = state.list.map(t => t.todoId === action.payload.todoId ? {
                     ...t,
                     tasksList: [...action.payload.queryData]
@@ -215,10 +217,16 @@ export const todoSlice = createSlice({
                     tasksDelete.splice(index, 1)
                 }
             })
-        // .addMatcher(Error, (state, action: PayloadAction<string>) => {
-        //     state.error = action.payload;
-        //     state.loading = false;
-        // });
+        .addMatcher(isError, (state, action: PayloadAction<string>) => {
+            state.error = action.payload;
+            state.loading = false;
+        });
     })
 });
 export default todoSlice.reducer;
+
+
+
+function isError(action: AnyAction) {
+    return action.type.endsWith('rejected');
+}

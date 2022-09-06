@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import ToDoList from './ToDoList';
 import {addTodoAsync, getTodosAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
 import InputBlockTodo from "./InputBlockTodo";
+import {useAppSelector} from "./hooks";
 
 
 
 function HomeScreen ({navigation}) {
     const [text, setText] = useState('')
     const dispatch = useDispatch();
-
+    const error = useAppSelector(state => state.todo.error)
 
 
     useEffect(() => {
@@ -29,6 +30,7 @@ function HomeScreen ({navigation}) {
     return (
         <View style={styles.todoContainer}>
             <InputBlockTodo addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
+            <Text style={{fontSize: 18}}>{error}</Text>
             <ToDoList navigation={navigation} text={text} />
         </View>
     )
@@ -36,7 +38,6 @@ function HomeScreen ({navigation}) {
 
 const styles = StyleSheet.create({
     todoContainer: {
-        backgroundColor: 'rgba(238,238,238,0.59)',
         alignItems: 'center',
         marginTop: 50,
     },
