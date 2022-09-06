@@ -36,7 +36,7 @@ function HomeScreen ({navigation}) {
 
 const styles = StyleSheet.create({
     todoContainer: {
-        backgroundColor: '#eee',
+        backgroundColor: 'rgba(238,238,238,0.59)',
         alignItems: 'center',
         marginTop: 50,
     },

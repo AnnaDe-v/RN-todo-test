@@ -170,7 +170,6 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(getTasksAsync.fulfilled, (state, action) => {
-                // state.list[action.payload.todoId] = {...action.payload.queryData}
                 debugger
                 state.list = state.list.map(t => t.todoId === action.payload.todoId ? {
                     ...t,

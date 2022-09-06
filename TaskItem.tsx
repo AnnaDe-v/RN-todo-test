@@ -2,10 +2,17 @@ import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Switch} fr
 import {Feather} from '@expo/vector-icons';
 import {deleteTaskAsync, toggleCompleteAsync} from "./redux/todoSlice";
 import {useDispatch} from "react-redux";
+import {FC} from "react";
 
 
+type taskItemType = {
+    taskId: string
+    text: string
+    IsCompleted: boolean
+    routeTodoId: string
+}
 
-const TaskItem = ({taskId, text, IsCompleted, routeTodoId}) => {
+const TaskItem:FC<taskItemType> = ({taskId, text, IsCompleted, routeTodoId}) => {
     const dispatch = useDispatch()
 
 

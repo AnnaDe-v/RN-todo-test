@@ -1,17 +1,21 @@
-import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Switch} from "react-native";
+import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import {Feather} from '@expo/vector-icons';
 import React, {FC} from "react";
 import {useNavigation} from "@react-navigation/native";
+import {useAppSelector} from "./hooks";
 
-interface Props {
+type todoItemType = {
     id: string
     text: string
     deleteTodo: (id) => void
 }
 
-const TodoItem = ({id, text, deleteTodo}) => {
+const TodoItem:FC<todoItemType> = ({id, text, deleteTodo}) => {
     const navigation =
         useNavigation();
+    const todoList = useAppSelector(state => state.todo.list)
+
+
 
     return (
         <View

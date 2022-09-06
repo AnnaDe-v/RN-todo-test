@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {useDispatch} from "react-redux";
-import {deleteTodoAsync, getTodosAsync} from "./redux/todoSlice";
+import {deleteTodoAsync} from "./redux/todoSlice";
 import {useAppSelector} from "./hooks";
 import TodoItem from './TodoItem';
 
@@ -9,8 +9,9 @@ import TodoItem from './TodoItem';
 const ToDoList = ({navigation, ...props}) => {
     const todoList = useAppSelector(state => state.todo.list)
     const dispatch = useDispatch()
-
     console.log('todoListW', todoList)
+
+
 
 
     const deleteTodo = (id) => {
