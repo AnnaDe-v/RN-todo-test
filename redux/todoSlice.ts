@@ -31,7 +31,7 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            return rejectWithValue('No connection to the server')
+            return rejectWithValue('Not any todo, yet')
 
         } else {
             return querySnapshot.docs.map((t) => ({
@@ -61,7 +61,7 @@ export const getTasksAsync = createAsyncThunk<tasksListType[], undefined, { reje
 
 export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: string }>(
     'todo/addTodoAsync',
-    async function (text, {rejectWithValue, dispatch}) {
+    async function (text, {rejectWithValue}) {
 
         const newTodo = doc(collection(db, 'todos'))
         const dataForTodo = {
@@ -76,7 +76,7 @@ export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: st
     }
 );
 
-export const addTaskAsync = createAsyncThunk<todoType, string>(
+export const addTaskAsync = createAsyncThunk<tasksListType, {string},  { rejectValue: string }>(
     'todo/addTaskAsync',
     async function ({text, routeTodoId}) {
 
@@ -97,9 +97,9 @@ export const addTaskAsync = createAsyncThunk<todoType, string>(
 )
 
 
-export const toggleCompleteAsync = createAsyncThunk<todoType, string, { rejectValue: string, state: { todo: TodosState } }>(
+export const toggleCompleteAsync = createAsyncThunk<string, { rejectValue: string}>(
     'todo/completeTodoAsync',
-    async function ({routeTodoId, taskId, IsCompleted}, {rejectWithValue, dispatch, getState}) {
+    async function ({routeTodoId, taskId, IsCompleted}, {rejectWithValue}) {
         const refTask = doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`)
         await updateDoc(refTask, {
             'IsCompleted': !IsCompleted
@@ -109,7 +109,7 @@ export const toggleCompleteAsync = createAsyncThunk<todoType, string, { rejectVa
 );
 
 
-export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: string }>(
+export const deleteTodoAsync = createAsyncThunk<string , string, { rejectValue: string }>(
     'todo/deleteTodoAsync',
     async function (todoId, {rejectWithValue}) {
 
@@ -120,7 +120,7 @@ export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: s
 
 export const deleteTaskAsync = createAsyncThunk<string, string, { rejectValue: string }>(
     'todo/deleteTaskAsync',
-    async function ({routeTodoId, taskId}) {
+    async function ({routeTodoId, taskId}, {rejectWithValue}) {
 
         const resp = await deleteDoc(doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`));
 
