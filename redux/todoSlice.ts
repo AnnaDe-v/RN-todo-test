@@ -22,13 +22,13 @@ type TodosState = {
 }
 
 
-
 export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectValue: string }>(
     'todo/getTodosAsync',
     async function (_, {rejectWithValue}) {
 
         const q = query(collection(db, "todos"));
         const querySnapshot = await getDocs(q);
+
 
         if (querySnapshot.empty) {
             return rejectWithValue('No connection to the server')
@@ -42,9 +42,9 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
 );
 
 
-export const getTasksAsync = createAsyncThunk<tasksListType[], undefined, { rejectValue: string }>(
+export const getTasksAsync = createAsyncThunk<tasksListType, string>(
     'todo/getTasksAsync',
-    async function (todoId: string, {rejectWithValue}) {
+    async function (todoId: string) {
 
         const q = query(collection(db, `todos/${todoId}/tasksList`));
         const querySnapshot = await getDocs(q);
@@ -59,9 +59,9 @@ export const getTasksAsync = createAsyncThunk<tasksListType[], undefined, { reje
 );
 
 
-export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: string }>(
+export const addTodoAsync = createAsyncThunk<todoType, string>(
     'todo/addTodoAsync',
-    async function (text, {rejectWithValue}) {
+    async function (text) {
 
         const newTodo = doc(collection(db, 'todos'))
         const dataForTodo = {
@@ -76,15 +76,15 @@ export const addTodoAsync = createAsyncThunk<todoType, string, { rejectValue: st
     }
 );
 
-export const addTaskAsync = createAsyncThunk<tasksListType, {string},  { rejectValue: string }>(
+export const addTaskAsync = createAsyncThunk<tasksListType, string>(
     'todo/addTaskAsync',
-    async function ({text, routeTodoId}) {
+    async function ({text, routeTodoId}: { text: string, routeTodoId: string}) {
 
         const todoRef = await doc(db, "todos", routeTodoId);
         const colRef = collection(todoRef, "tasksList")
         const newTask = doc(collection(db, `todos/${routeTodoId}/tasksList`))
 
-        const dataForTask = {
+        const dataForTask: tasksListType = {
             taskTitle: text,
             taskId: newTask.id,
             IsCompleted: false
@@ -97,9 +97,9 @@ export const addTaskAsync = createAsyncThunk<tasksListType, {string},  { rejectV
 )
 
 
-export const toggleCompleteAsync = createAsyncThunk<string, { rejectValue: string}>(
+export const toggleCompleteAsync = createAsyncThunk<string>(
     'todo/completeTodoAsync',
-    async function ({routeTodoId, taskId, IsCompleted}, {rejectWithValue}) {
+    async function ( { routeTodoId, taskId, IsCompleted }: { routeTodoId: string, taskId: string, IsCompleted: boolean }) {
         const refTask = doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`)
         await updateDoc(refTask, {
             'IsCompleted': !IsCompleted
@@ -109,7 +109,7 @@ export const toggleCompleteAsync = createAsyncThunk<string, { rejectValue: strin
 );
 
 
-export const deleteTodoAsync = createAsyncThunk<string , string, { rejectValue: string }>(
+export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: string }>(
     'todo/deleteTodoAsync',
     async function (todoId, {rejectWithValue}) {
 
@@ -130,24 +130,7 @@ export const deleteTaskAsync = createAsyncThunk<string, string, { rejectValue: s
 
 
 const initialState: TodosState = {
-    list: [
-        // {
-        //     todoTitle: 'Tools store',
-        //     todoId: '58958u5494',
-        //     tasksList: [
-        //         {
-        //             taskId: '1',
-        //             taskTitle: 'Hammer',
-        //             IsCompleted: false,
-        //         },
-        //         {
-        //             taskId: '2',
-        //             taskTitle: 'WD-40',
-        //             IsCompleted: false,
-        //         }
-        //     ]
-        // },
-    ],
+    list: [],
     loading: false,
     error: null
 }
@@ -217,14 +200,13 @@ export const todoSlice = createSlice({
                     tasksDelete.splice(index, 1)
                 }
             })
-        .addMatcher(isError, (state, action: PayloadAction<string>) => {
-            state.error = action.payload;
-            state.loading = false;
-        });
+            .addMatcher(isError, (state, action: PayloadAction<string>) => {
+                state.error = action.payload;
+                state.loading = false;
+            });
     })
 });
 export default todoSlice.reducer;
-
 
 
 function isError(action: AnyAction) {
