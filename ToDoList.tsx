@@ -14,6 +14,7 @@ const ToDoList = ({navigation, ...props}) => {
 
 
 
+
     const deleteTodo = (id) => {
         dispatch(deleteTodoAsync(id))
     }
@@ -45,6 +46,7 @@ const ToDoList = ({navigation, ...props}) => {
                             text={t.todoTitle}
                             id={t.todoId}
                             deleteTodo={deleteTodo}
+                            taskCount={+t.tasksList?.length}
                         />
                     </TouchableOpacity>
                 ))

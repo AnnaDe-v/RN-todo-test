@@ -7,21 +7,24 @@ import {useAppSelector} from "./hooks";
 type todoItemType = {
     id: string
     text: string
-    deleteTodo: (id) => void
+    deleteTodo: (id: string) => void
+    taskCount: number
 }
 
-const TodoItem:FC<todoItemType> = ({id, text, deleteTodo}) => {
-    const navigation =
-        useNavigation();
-    const todoList = useAppSelector(state => state.todo.list)
 
 
+const TodoItem:FC<todoItemType> = ({id, text, deleteTodo, taskCount}) => {
+    if(taskCount > 0) {
+    } else {
+        taskCount = 0
+    }
 
     return (
         <View
             style={styles.item}
         >
             <Text style={styles.name}>{text}</Text>
+            <Text style={styles.count}>{taskCount}</Text>
             <TouchableOpacity onPress={() => deleteTodo(id)}>
                 <Feather name="trash" size={24} color="red"/>
             </TouchableOpacity>
@@ -47,6 +50,12 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         flex: 1,
         flexWrap: 'wrap',
+    },
+    count: {
+        position: 'absolute',
+        right: 50,
+        color: 'white',
+        fontSize: 18,
     }
 })
 
