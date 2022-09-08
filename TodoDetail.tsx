@@ -41,6 +41,7 @@ const TodoDetail = ({route, navigation}) => {
                             text={text}
                             setText={setText}
             />
+
             <ScrollView>
                 {
                     filteredTasks.map((t, index) => (

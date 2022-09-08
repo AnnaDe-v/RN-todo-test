@@ -1,5 +1,5 @@
 import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc} from 'firebase/firestore';
+import {collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, updateDoc} from 'firebase/firestore';
 import {db} from "../firebase";
 
 export type todoType = {
@@ -31,7 +31,7 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            return rejectWithValue('Not any todo, yet')
+            return rejectWithValue('No connection to the server')
 
         } else {
             return querySnapshot.docs.map((t) => ({
@@ -163,7 +163,7 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(getTodosAsync.fulfilled, (state, action) => {
-                if(state.list !== action.payload) {
+                if (state.list !== action.payload) {
                     state.list.unshift(...action.payload)
                 }
                 state.loading = false
