@@ -31,7 +31,7 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
 
 
         if (querySnapshot.empty) {
-            return rejectWithValue('No connection to the server')
+            return rejectWithValue('No todo yet')
 
         } else {
             return querySnapshot.docs.map((t) => ({

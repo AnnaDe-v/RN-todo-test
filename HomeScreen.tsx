@@ -30,7 +30,7 @@ function HomeScreen ({navigation}) {
     return (
         <View style={styles.todoContainer}>
             <InputBlockTodo addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
-            <Text style={{fontSize: 18}}>{error}</Text>
+            <Text style={{fontSize: 18, color: '#938e8e'}}>{error}</Text>
             <ToDoList navigation={navigation} text={text} />
         </View>
     )
