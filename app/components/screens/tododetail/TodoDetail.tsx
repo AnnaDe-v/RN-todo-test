@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView} from "react-native";
-import InputBlockTask from "./InputBlockTask";
-import {useAppSelector} from "./hooks";
+import InputBlockTask from "../../ui/InputBlockTask";
+import {useAppSelector} from "../../../hooks/hooks";
 import {useDispatch} from "react-redux";
 import TaskItem from './TaskItem';
-import {addTaskAsync, getTasksAsync} from "./redux/todoSlice";
+import {addTaskAsync, getTasksAsync} from "../../../../redux/todoSlice";
 
 
 const TodoDetail = ({route, navigation}) => {

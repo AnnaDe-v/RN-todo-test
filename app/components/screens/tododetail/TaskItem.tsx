@@ -1,6 +1,6 @@
 import {Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Switch} from "react-native";
 import {Feather} from '@expo/vector-icons';
-import {deleteTaskAsync, toggleCompleteAsync} from "./redux/todoSlice";
+import {deleteTaskAsync, toggleCompleteAsync} from "../../../../redux/todoSlice";
 import {useDispatch} from "react-redux";
 import {FC} from "react";
 

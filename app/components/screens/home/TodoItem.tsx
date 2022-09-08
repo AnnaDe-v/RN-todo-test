@@ -1,8 +1,8 @@
 import {Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import {Feather} from '@expo/vector-icons';
 import React, {FC} from "react";
-import {useNavigation} from "@react-navigation/native";
-import {useAppSelector} from "./hooks";
+
+
 
 type todoItemType = {
     id: string
@@ -10,7 +10,6 @@ type todoItemType = {
     deleteTodo: (id: string) => void
     taskCount: number
 }
-
 
 
 const TodoItem:FC<todoItemType> = ({id, text, deleteTodo, taskCount}) => {

@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import ToDoList from './ToDoList';
-import {addTodoAsync, getTodosAsync} from "./redux/todoSlice";
+import {addTodoAsync, getTodosAsync} from "../../../../redux/todoSlice";
 import {useDispatch} from "react-redux";
-import InputBlockTodo from "./InputBlockTodo";
-import {useAppSelector} from "./hooks";
+import InputBlockTodo from "../../ui/InputBlockTodo";
+import {useAppSelector} from "../../../hooks/hooks";
 
 
 

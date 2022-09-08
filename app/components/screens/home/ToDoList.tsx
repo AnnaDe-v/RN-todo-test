@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {useDispatch} from "react-redux";
-import {deleteTodoAsync} from "./redux/todoSlice";
-import {useAppSelector} from "./hooks";
+import {deleteTodoAsync} from "../../../../redux/todoSlice";
+import {useAppSelector} from "../../../hooks/hooks";
 import TodoItem from './TodoItem';
 
 

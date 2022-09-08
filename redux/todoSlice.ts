@@ -1,6 +1,6 @@
 import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, updateDoc} from 'firebase/firestore';
-import {db} from "../firebase";
+import {db} from "../firebase/firebase";
 
 export type todoType = {
     todoTitle: string
@@ -109,18 +109,18 @@ export const toggleCompleteAsync = createAsyncThunk<string>(
 );
 
 
-export const deleteTodoAsync = createAsyncThunk<string, string, { rejectValue: string }>(
+export const deleteTodoAsync = createAsyncThunk<string, string>(
     'todo/deleteTodoAsync',
-    async function (todoId, {rejectWithValue}) {
+    async function (todoId) {
 
         const resp = await deleteDoc(doc(db, `todos`, todoId));
         return todoId
     }
 );
 
-export const deleteTaskAsync = createAsyncThunk<string, string, { rejectValue: string }>(
+export const deleteTaskAsync = createAsyncThunk<string, string>(
     'todo/deleteTaskAsync',
-    async function ({routeTodoId, taskId}, {rejectWithValue}) {
+    async function ({routeTodoId, taskId}: {routeTodoId: string, taskId: string}) {
 
         const resp = await deleteDoc(doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`));
 
