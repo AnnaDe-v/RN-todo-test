@@ -14,19 +14,14 @@ const InputBlockTodo = ({text, setText, addNewTodoHandler, textPlaceholder}) => 
                 placeholder={textPlaceholder}
             />
             <TouchableOpacity
-                style={{
-                    backgroundColor: 'rgb(123,72,243)',
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: 40,
-                    borderRadius: 10,
-                }}
+                style={styles.buttonAdd}
                 onPress={() => addNewTodoHandler(text)}>
-                <Text style={{color: 'white', fontSize: 18}}>Add</Text>
+                <Text style={styles.buttonAddText}>Add</Text>
             </TouchableOpacity>
         </View>
     );
 };
+
 
 export default InputBlockTodo;
 
@@ -36,7 +31,6 @@ const styles = StyleSheet.create({
         padding: 20,
         justifyContent: "center",
         width: '100%',
-
     },
     input: {
         borderRadius: 20,
@@ -44,5 +38,15 @@ const styles = StyleSheet.create({
         marginVertical: 25,
         textAlign: "center"
     },
-
+    buttonAdd: {
+        backgroundColor: 'rgb(123,72,243)',
+        alignItems: "center",
+        justifyContent: "center",
+        height: 40,
+        borderRadius: 10,
+    },
+    buttonAddText: {
+        color: 'white',
+        fontSize: 18
+    }
 });

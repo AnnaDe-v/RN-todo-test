@@ -3,8 +3,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import ToDoList from './ToDoList';
 import {addTodoAsync, getTodosAsync} from "../../../../redux/todoSlice";
 import {useDispatch} from "react-redux";
-import InputBlockTodo from "../../ui/InputBlockTodo";
 import {useAppSelector} from "../../../hooks/hooks";
+import InputBlockTodo from '../../ui/InputBlockTodo';
 
 
 
@@ -30,7 +30,7 @@ function HomeScreen ({navigation}) {
     return (
         <View style={styles.todoContainer}>
             <InputBlockTodo addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
-            <Text style={{fontSize: 18, color: '#938e8e'}}>{error}</Text>
+            <Text style={styles.error}>{error}</Text>
             <ToDoList navigation={navigation} text={text} />
         </View>
     )
@@ -41,6 +41,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 50,
     },
+    error: {
+        fontSize: 18,
+        color: '#938e8e'
+    }
 });
 
 export default HomeScreen;
