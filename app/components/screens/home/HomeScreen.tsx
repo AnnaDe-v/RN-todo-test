@@ -8,7 +8,7 @@ import {useAppSelector} from "../../../hooks/hooks";
 
 
 
-function HomeScreen ({navigation}) {
+const HomeScreen  = ({navigation}) => {
     const [text, setText] = useState('')
     const dispatch = useDispatch();
     const error = useAppSelector(state => state.todo.error)

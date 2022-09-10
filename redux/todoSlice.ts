@@ -1,5 +1,5 @@
 import {AnyAction, createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, updateDoc} from 'firebase/firestore';
+import {collection, deleteDoc, doc, getDocs, query, setDoc, updateDoc} from 'firebase/firestore';
 import {db} from "../firebase/firebase";
 
 export type todoType = {
@@ -26,25 +26,30 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
     'todo/getTodosAsync',
     async function (_, {rejectWithValue}) {
 
-        const q = query(collection(db, "todos"));
-        const querySnapshot = await getDocs(q);
-
-
-        if (querySnapshot.empty) {
-            return rejectWithValue('No todo yet')
-
-        } else {
-            return querySnapshot.docs.map((t) => ({
-                ...t.data()
-            }))
+        const refTodo = query(collection(db, "todos"))
+        return getDocs(refTodo).then((snap) => {
+            if(!snap.empty) {
+                return snap.docs.map((t) => (
+                    {
+                        ...t.data()
+                    }
+                ))
+            } else {
+                return rejectWithValue('Nothing todo yet')
+            }
         }
+        ).catch(() => {
+            return rejectWithValue('Server error')
+        })
     }
 );
+
 
 
 export const getTasksAsync = createAsyncThunk<tasksListType, string>(
     'todo/getTasksAsync',
     async function (todoId: string) {
+
 
         const q = query(collection(db, `todos/${todoId}/tasksList`));
         const querySnapshot = await getDocs(q);
@@ -68,7 +73,7 @@ export const addTodoAsync = createAsyncThunk<todoType, string>(
             todoTitle: text,
             todoId: newTodo.id,
         }
-        const queryData = await setDoc(newTodo, dataForTodo);
+        await setDoc(newTodo, dataForTodo);
 
         const newTodoId = newTodo.id
 
@@ -76,30 +81,28 @@ export const addTodoAsync = createAsyncThunk<todoType, string>(
     }
 );
 
-export const addTaskAsync = createAsyncThunk<tasksListType, string>(
+export const addTaskAsync = createAsyncThunk<{ tasksListType, string }, string>(
     'todo/addTaskAsync',
-    async function ({text, routeTodoId}: { text: string, routeTodoId: string}) {
+    async function ({text, routeTodoId}: { text: string, routeTodoId: string }) {
 
-        const todoRef = await doc(db, "todos", routeTodoId);
-        const colRef = collection(todoRef, "tasksList")
-        const newTask = doc(collection(db, `todos/${routeTodoId}/tasksList`))
+        const newTaskref = doc(collection(db, `todos/${routeTodoId}/tasksList`))
 
         const dataForTask: tasksListType = {
             taskTitle: text,
-            taskId: newTask.id,
+            taskId: newTaskref.id,
             IsCompleted: false
         }
 
-        const queryData = await setDoc(newTask, dataForTask);
+        await setDoc(newTaskref, dataForTask);
 
         return {dataForTask, routeTodoId}
     }
 )
 
 
-export const toggleCompleteAsync = createAsyncThunk<string>(
+export const toggleCompleteAsync = createAsyncThunk<string, string>(
     'todo/completeTodoAsync',
-    async function ( { routeTodoId, taskId, IsCompleted }: { routeTodoId: string, taskId: string, IsCompleted: boolean }) {
+    async function ({routeTodoId, taskId, IsCompleted}: { routeTodoId: string, taskId: string, IsCompleted: boolean }) {
         const refTask = doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`)
         await updateDoc(refTask, {
             'IsCompleted': !IsCompleted
@@ -113,16 +116,16 @@ export const deleteTodoAsync = createAsyncThunk<string, string>(
     'todo/deleteTodoAsync',
     async function (todoId) {
 
-        const resp = await deleteDoc(doc(db, `todos`, todoId));
+        await deleteDoc(doc(db, `todos`, todoId));
         return todoId
     }
 );
 
 export const deleteTaskAsync = createAsyncThunk<string, string>(
     'todo/deleteTaskAsync',
-    async function ({routeTodoId, taskId}: {routeTodoId: string, taskId: string}) {
+    async function ({routeTodoId, taskId}: { routeTodoId: string, taskId: string }) {
 
-        const resp = await deleteDoc(doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`));
+        await deleteDoc(doc(db, `todos`, `${routeTodoId}/tasksList/${taskId}`));
 
         return {routeTodoId, taskId}
     }

@@ -1,9 +1,0 @@
-[x]- toggle task
-[x]- delete task
-[x]- render
-[x] - bug clone todo
-[x]- styles
-[] - types
-[]- loading
-[]- sorting folders
-[] - error handled

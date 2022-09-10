@@ -6,8 +6,8 @@ import HomeScreen from "./app/components/screens/home/HomeScreen";
 import TodoDetail from "./app/components/screens/tododetail/TodoDetail";
 import store from "./redux/store";
 
-
 export default function RootNavigation() {
+
 
     const Stack = createStackNavigator();
 
