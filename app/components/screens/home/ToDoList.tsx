@@ -8,9 +8,8 @@ import TodoItem from './TodoItem';
 
 const ToDoList = ({navigation, ...props}) => {
     const todoList = useAppSelector(state => state.todo.list)
-    const dispatch = useDispatch()
-    console.log('todoListW', todoList)
     const loading = useAppSelector(state => state.todo.loading)
+    const dispatch = useDispatch()
 
 
 
@@ -21,7 +20,6 @@ const ToDoList = ({navigation, ...props}) => {
 
     return (
         <ScrollView style={{marginBottom: 200, marginTop: 20}}>
-
             {   !loading ? (
                 todoList.map((t, index) => (
 

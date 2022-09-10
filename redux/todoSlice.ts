@@ -149,9 +149,7 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(getTodosAsync.fulfilled, (state, action) => {
-                if (state.list !== action.payload) {
                     state.list.unshift(...action.payload)
-                }
                 state.loading = false
             })
             .addCase(getTasksAsync.pending, (state) => {
