@@ -14,13 +14,7 @@ const InputBlockTask = ({text, setText, addNewTaskHandler, textPlaceholder}) => 
                 placeholder={textPlaceholder}
             />
             <TouchableOpacity
-                style={{
-                    backgroundColor: 'rgb(123,72,243)',
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: 40,
-                    borderRadius: 10,
-                }}
+                style={styles.buttonAdd}
                 onPress={() => addNewTaskHandler(text)}>
                 <Text style={{color: 'white', fontSize: 18}}>Add</Text>
             </TouchableOpacity>
@@ -44,5 +38,12 @@ const styles = StyleSheet.create({
         marginVertical: 25,
         marginHorizontal: '15%'
     },
+    buttonAdd: {
+        backgroundColor: 'rgb(123,72,243)',
+        alignItems: "center",
+        justifyContent: "center",
+        height: 40,
+        borderRadius: 10,
+    }
 
 });
