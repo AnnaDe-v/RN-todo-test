@@ -5,6 +5,7 @@ import {useDispatch} from "react-redux";
 import TaskItem from './TaskItem';
 import {addTaskAsync, getTasksAsync} from "../../../../redux/todoSlice";
 import InputBlockTask from '../../ui/InputBlockTask';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const TodoDetail = ({route, navigation}) => {
@@ -44,11 +45,11 @@ const TodoDetail = ({route, navigation}) => {
 
             <ScrollView>
                 {
-                    filteredTasks.map((t, index) => (
-                        <View key={index}>
+                    filteredTasks.map((t) => (
+                        <View key={uuidv4()}>
                         {t.tasksList?.map(task =>
                             <TaskItem
-                                key={task.taskId}
+                                key={uuidv4()}
                                 text={task.taskTitle}
                                 taskId={task.taskId}
                                 IsCompleted={task.IsCompleted}

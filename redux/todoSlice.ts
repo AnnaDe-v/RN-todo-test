@@ -48,7 +48,7 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
 
 export const getTasksAsync = createAsyncThunk<tasksListType, string>(
     'todo/getTasksAsync',
-    async function (todoId: string) {
+    async function (todoId) {
 
 
         const q = query(collection(db, `todos/${todoId}/tasksList`));

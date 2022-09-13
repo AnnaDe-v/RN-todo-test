@@ -1,17 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {ActivityIndicator, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {useDispatch} from "react-redux";
 import {deleteTodoAsync} from "../../../../redux/todoSlice";
 import {useAppSelector} from "../../../hooks/hooks";
 import TodoItem from './TodoItem';
+import { v4 as uuidv4 } from 'uuid';
 
-
-const ToDoList = ({navigation, ...props}) => {
-    const todoList = useAppSelector(state => state.todo.list)
+const ToDoList =  ({navigation}) => {
     const loading = useAppSelector(state => state.todo.loading)
+    const todoList = useAppSelector(state => state.todo.list)
     const dispatch = useDispatch()
-
-
 
 
     const deleteTodo = (id) => {
@@ -21,14 +19,13 @@ const ToDoList = ({navigation, ...props}) => {
     return (
         <ScrollView style={{marginBottom: 200, marginTop: 20}}>
             {   !loading ? (
-                todoList.map((t, index) => (
-
+                todoList.map((t) => (
                     <TouchableOpacity
-                        key={index}
+                        key={uuidv4()}
                         activeOpacity={1}
                         style={{
                             marginBottom: 10,
-                            borderRadius: 10,
+                            borderRadius: 20,
                             alignItems: 'center',
                             flexDirection: 'row',
                         }}
@@ -40,7 +37,7 @@ const ToDoList = ({navigation, ...props}) => {
                         }
                     >
                         <TodoItem
-                            key={index}
+                            key={uuidv4()}
                             text={t.todoTitle}
                             id={t.todoId}
                             deleteTodo={deleteTodo}
@@ -53,11 +50,10 @@ const ToDoList = ({navigation, ...props}) => {
                 size="large"
             />
             )
-
             }
 
         </ScrollView>
     );
-};
+}
 
 export default ToDoList;
