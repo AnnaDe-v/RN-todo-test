@@ -8,10 +8,9 @@ import InputBlockTask from '../../ui/InputBlockTask';
 import { v4 as uuidv4 } from 'uuid';
 
 
-const TodoDetail = ({route, navigation}) => {
+const TodoDetail = ({route}) => {
     const dispatch = useDispatch();
     const tasks = useAppSelector((state) => state.todo.list);
-    const {loading, error} = useAppSelector((state) => state.todo);
     const [text, setText] = useState('')
     const routeTodoId = route.params.todoId
 

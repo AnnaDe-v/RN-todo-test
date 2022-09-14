@@ -5,7 +5,7 @@ import {db} from "../firebase/firebase";
 export type todoType = {
     todoTitle: string
     todoId: string
-    tasksList: tasksListType[]
+    tasksList?: tasksListType[]
 }
 
 export type tasksListType = {
@@ -14,13 +14,11 @@ export type tasksListType = {
     IsCompleted: boolean
 }
 
-
-type TodosState = {
+export type TodosState = {
     list: todoType[]
     loading: boolean
     error: string | null
 }
-
 
 export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectValue: string }>(
     'todo/getTodosAsync',
@@ -28,22 +26,21 @@ export const getTodosAsync = createAsyncThunk<todoType[], undefined, { rejectVal
 
         const refTodo = query(collection(db, "todos"))
         return getDocs(refTodo).then((snap) => {
-            if(!snap.empty) {
-                return snap.docs.map((t) => (
-                    {
-                        ...t.data()
-                    }
-                ))
-            } else {
-                return rejectWithValue('Nothing todo yet')
+                if (!snap.empty) {
+                    return snap.docs.map((t) => (
+                        {
+                            ...t.data()
+                        }
+                    ))
+                } else {
+                    return rejectWithValue('Nothing todo yet')
+                }
             }
-        }
         ).catch(() => {
             return rejectWithValue('Server error')
         })
     }
 );
-
 
 
 export const getTasksAsync = createAsyncThunk<tasksListType, string>(
@@ -149,7 +146,7 @@ export const todoSlice = createSlice({
                 state.error = null
             })
             .addCase(getTodosAsync.fulfilled, (state, action) => {
-                    state.list.unshift(...action.payload)
+                state.list.push(...action.payload)
                 state.loading = false
             })
             .addCase(getTasksAsync.pending, (state) => {

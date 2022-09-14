@@ -1,14 +1,15 @@
 import React from 'react';
 import {ActivityIndicator, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {useDispatch} from "react-redux";
-import {deleteTodoAsync} from "../../../../redux/todoSlice";
+import {deleteTodoAsync, todoType} from "../../../../redux/todoSlice";
 import {useAppSelector} from "../../../hooks/hooks";
 import TodoItem from './TodoItem';
 import { v4 as uuidv4 } from 'uuid';
 
-const ToDoList =  ({navigation}) => {
+
+
+const ToDoList = React.memo(function ({navigation, todoList}) {
     const loading = useAppSelector(state => state.todo.loading)
-    const todoList = useAppSelector(state => state.todo.list)
     const dispatch = useDispatch()
 
 
@@ -54,6 +55,6 @@ const ToDoList =  ({navigation}) => {
 
         </ScrollView>
     );
-}
+}, (prevProps, nextProps) => prevProps === nextProps)
 
 export default ToDoList;

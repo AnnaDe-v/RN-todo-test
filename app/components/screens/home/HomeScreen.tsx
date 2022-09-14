@@ -7,10 +7,11 @@ import {useAppSelector} from "../../../hooks/hooks";
 import InputBlockTodo from '../../ui/InputBlockTodo';
 
 
-const HomeScreen = React.memo( function ({navigation}) {
+const HomeScreen =  ({navigation}) => {
     const [text, setText] = useState('')
     const dispatch = useDispatch();
     const error = useAppSelector(state => state.todo.error)
+    const todoList = useAppSelector(state => state.todo.list)
 
 
     useEffect(() => {
@@ -30,10 +31,10 @@ const HomeScreen = React.memo( function ({navigation}) {
         <View style={styles.todoContainer}>
             <InputBlockTodo addNewTodoHandler={addNewTodoHandler} setText={setText} text={text} textPlaceholder='Type todo...'/>
             <Text style={styles.error}>{error}</Text>
-            <ToDoList navigation={navigation} />
+            <ToDoList navigation={navigation} todoList={todoList}/>
         </View>
     )
-})
+}
 
 const styles = StyleSheet.create({
     todoContainer: {
